@@ -4,12 +4,12 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 
 ## State
 
-- **Current phase:** L — Link (Blueprint approved by the user on 2026-10-02)
+- **Current phase:** L — Link, complete on 2026-10-02. Next: A — Architect. (Blueprint approved by the user on 2026-10-02.)
 - **Execution gate:** OPEN since 2026-10-02. All three conditions are met:
   - [x] All five Blueprint discovery questions are answered
   - [x] The Data Schema below is defined and the Payload shape is confirmed
   - [x] `memory/task_plan.md` has an approved Blueprint
-- **Phase L gate:** no business logic until every link is green. Only probes and setup tools may be written before that.
+- **Phase L gate:** OPEN since 2026-10-02. Every link is green, so business logic may be written.
 
 ## Blueprint (Phase B)
 
@@ -158,9 +158,9 @@ Status of every link. A link is green only after its probe has passed with real 
 | Google Calendar | GREEN | `npm run probe:calendar`: free/busy readable on the owner's primary calendar. The calendar's own time zone is UTC |
 | Google Sheets | GREEN | `npm run probe:sheets`: sheet "Website Leads", tab "Leads", header row matches the schema |
 | Email (Proton SMTP) | GREEN | `npm run probe:email` on 2026-10-02: signed in to `smtp.protonmail.ch:587` with the owner's SMTP token and sent a test email to the owner (`250 2.0.0 Ok: queued`) |
-| Credentials in Vercel | RED: waiting for the owner | `npm run vercel:env`, then `/api/link-check` on a preview must report calendar, sheets and email green. Only `SMTP_HOST` and `SMTP_PORT` are set so far |
+| Credentials in Vercel | GREEN | The owner ran `npm run vercel:env` (ten values, Production and Preview; the three secrets stored as Vercel secrets). `/api/link-check` on a fresh preview returned 200 with calendar, sheets and email all GREEN |
 
-Business logic does not start until every row is green. **Phase L is waiting on one thing: the credentials being copied to Vercel (`npm run vercel:env`, run by the owner), then a green `/api/link-check` on a preview.**
+Business logic does not start until every row is green. **Every link is green as of 2026-10-02. Phase L is complete.** Caveat: the Google sign-in expires around 2026-10-09 while the app is in Testing. If a Google check turns RED with `invalid_grant`, the owner runs `npm run google:auth`, then `npm run vercel:env -- GOOGLE_REFRESH_TOKEN`.
 
 ## Architect (Phase A)
 

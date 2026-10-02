@@ -102,6 +102,10 @@ What was done, errors hit, tests run, results. Newest first.
 - `npm run probe:email`: `GREEN email: test email sent from zack@ascension-marketing.ca to zack@ascension-marketing.ca, server said "250 2.0.0 Ok: queued as …"`. One test email sent to the owner.
 - Calendar and Sheets probes re-run: both GREEN.
 - Every local link is green. Remaining for Phase L: the owner runs `npm run vercel:env`, then `/api/link-check` on a preview must be green.
+- The owner ran `npm run vercel:env`: `GREEN vercel env: set in Vercel for production and preview: GOOGLE_CLIENT_ID, GOOGLE_CALENDAR_ID, OWNER_EMAIL, LEAD_SHEET_ID, SMTP_HOST, SMTP_PORT, SMTP_USER, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, SMTP_TOKEN`.
+  - `vercel env ls`: all ten present for Production and Preview; `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `SMTP_TOKEN` stored as Secret, the rest as Config.
+  - Fresh preview (`vercel deploy`, target preview, Ready). `/api/link-check` returned HTTP 200, `ok: true`: calendar GREEN, sheets GREEN, email GREEN (signed in to `smtp.protonmail.ch:587` from inside Vercel).
+- **Phase L complete.** All links green locally and inside Vercel.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

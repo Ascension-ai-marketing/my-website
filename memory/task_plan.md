@@ -1,6 +1,8 @@
 # Task Plan
 
-**Blueprint status:** APPROVED by the user on 2026-10-02 ("yes to all, blueprint approved"). Current phase: L (Link).
+**Blueprint status:** APPROVED by the user on 2026-10-02 ("yes to all, blueprint approved"). Phase L (Link) complete on 2026-10-02. Next: Phase A (Architect).
+
+**Deadline:** the Google sign-in expires around 2026-10-09 while the OAuth app is in Testing. Re-run `npm run google:auth` and `npm run vercel:env -- GOOGLE_REFRESH_TOKEN` if it lapses during development; fix it for good before Phase T.
 
 ## Blueprint
 
@@ -82,9 +84,9 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Email tools built: `probe:email`, `env:paste`; a Vercel function can reach Proton's server
 - [x] **Owner:** generate the Proton SMTP token and save it with `npm run env:paste -- SMTP_TOKEN` (`architecture/email-setup.md`)
 - [x] Email probe green
-- [ ] **Owner:** copy the credentials to Vercel with `npm run vercel:env`
-- [ ] `/api/link-check` on a preview deployment reports calendar, sheets and email green
-- [ ] Every link green before moving on
+- [x] **Owner:** copy the credentials to Vercel with `npm run vercel:env`
+- [x] `/api/link-check` on a preview deployment reports calendar, sheets and email green
+- [x] Every link green before moving on (2026-10-02)
 
 ## Phase A: Architect
 
