@@ -8,7 +8,8 @@ Research, discoveries, and constraints. Newest first.
 - Verified: the server answers `220` on port 587 from this machine and from a Vercel function (preview deployment). It advertises STARTTLS.
 - The domain's DNS is at GoDaddy (`domaincontrol.com` nameservers); the current website is on Wix. SPF authorizes Proton only; DMARC is `p=quarantine` with relaxed alignment. Sending through Proton passes all of these without DNS changes. Any other sender (such as Resend) would need new DNS records.
 - The user confirmed the Google Calendar on `zack@ascension-marketing.ca` is the calendar they actually use.
-- Vercel: `vercel env add NAME production,preview --force --yes` with the value on stdin works without prompts. A pushed branch once did not get a preview deployment; `vercel deploy` made one.
+- Vercel: `vercel env add NAME production,preview --force --yes` with the value on stdin works without prompts. A pushed branch once did not get a preview deployment; `vercel deploy` made one (and uploaded `.env`; see the correction above).
+- Vercel functions on this project use Fluid compute, region `iad1`, default time limit 300 seconds.
 
 ## 2026-10-02: Probe results with real credentials
 
@@ -51,7 +52,7 @@ Research, discoveries, and constraints. Newest first.
 - **The connection must be added on the account that owns the project.** The CLI account `tools-7405` is `tools@ascension-marketing.ca`. The built-in browser pane was signed in as `admin.ascension.marketing@gmail.com`, the other account. Connecting GitHub there would not help this project.
 - **GitHub's Authorize button showed as disabled in the browser pane's popup window.** The popup is a sign-in window that Claude cannot inspect or drive. Workaround: do the GitHub authorization in a regular browser.
 - **A new project's first deployment is promoted to production** even when run without `--prod`.
-- The CLI ignores `.env` files when uploading, and `vercel link` adds `.vercel` and `.env*` to `.gitignore`.
+- ~~The CLI ignores `.env` files when uploading~~ **Wrong, corrected 2026-10-02:** `vercel deploy` uploads `.env` because the CLI does not read `.gitignore`. Four CLI deployments contain `src/.env` (three with real secrets). `.vercelignore` now prevents it; see `architecture/deploy.md`, Lessons. `vercel link` does add `.vercel` and `.env*` to `.gitignore`, which only affects git.
 
 ## 2026-10-02: Vercel access (connector account)
 

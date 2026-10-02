@@ -9,6 +9,13 @@ export const SCOPES = {
 
 export const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
+// The last access token, reused until a minute before it expires (one booking makes several calls).
+let cached = null;
+
+export function clearTokenCache() {
+  cached = null;
+}
+
 // Exchanges the stored refresh token for a short-lived access token.
 // Throws if the token does not carry every scope in requiredScopes.
 export async function getAccessToken(requiredScopes = [], env = process.env) {
@@ -16,7 +23,19 @@ export async function getAccessToken(requiredScopes = [], env = process.env) {
     ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_REFRESH_TOKEN'],
     env,
   );
+  if (!cached || cached.refreshToken !== GOOGLE_REFRESH_TOKEN || Date.now() > cached.expiresAt - 60_000) {
+    cached = await refreshAccessToken(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN);
+  }
 
+  // Google normally echoes the granted scopes; if it does not, the API call itself reports a gap.
+  const missing = typeof cached.scope === 'string' ? missingScopes(cached.scope, requiredScopes) : [];
+  if (missing.length > 0) {
+    throw new Error(`Sign-in is missing scope: ${missing.join(', ')}. Run "npm run google:auth" again.`);
+  }
+  return cached.token;
+}
+
+async function refreshAccessToken(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN) {
   const res = await fetch(TOKEN_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -33,13 +52,12 @@ export async function getAccessToken(requiredScopes = [], env = process.env) {
       `Google token refresh failed (${res.status}): ${body.error} ${body.error_description ?? ''}`.trim(),
     );
   }
-
-  // Google normally echoes the granted scopes; if it does not, the API call itself reports a gap.
-  const missing = typeof body.scope === 'string' ? missingScopes(body.scope, requiredScopes) : [];
-  if (missing.length > 0) {
-    throw new Error(`Sign-in is missing scope: ${missing.join(', ')}. Run "npm run google:auth" again.`);
-  }
-  return body.access_token;
+  return {
+    refreshToken: GOOGLE_REFRESH_TOKEN,
+    token: body.access_token,
+    scope: body.scope,
+    expiresAt: Date.now() + (body.expires_in ?? 0) * 1000,
+  };
 }
 
 // grantedScope is Google's space-separated scope string.

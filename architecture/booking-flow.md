@@ -51,9 +51,16 @@ Each step either passes or ends the flow with a refusal. Nothing is created befo
 
 On the production site both endpoints answer `404` unless the Vercel environment variable `BOOKING_LIVE` is `true`. Preview deployments always run them (they are behind Vercel sign-in). Turning booking on is a Phase T step and needs the user's sign-off.
 
+## Time limits
+
+- `api/book.js` may run up to 180 seconds and `api/slots.js` up to 30 seconds (`vercel.json`, `functions`). The project default is 300.
+- One booking makes about eight Google calls in sequence, may wait up to 3 seconds for the Meet link, and sends two emails with up to two attempts each.
+- SMTP timeouts are 8 seconds to connect, 8 seconds for the greeting and 12 seconds of silence. Four failing attempts therefore stay under about 112 seconds, inside the 180-second limit.
+- If the function were cut off after the event exists, the booking would be half delivered and a retry by the visitor would get `already_booked`. The limits above are sized so that does not happen.
+
 ## Logging
 
-One line per request, JSON, through `console.log`, visible in Vercel's runtime logs. It holds the outcome, reason, event id, email statuses and message ids, and lead row number. It never holds the visitor's name, email, phone, company or message.
+One line per request, JSON, through `console.log`, visible in Vercel's runtime logs. It holds the outcome, reason, event id, email statuses and message ids, lead row number, and `elapsed_ms`. It never holds the visitor's name, email, phone, company or message.
 
 ## Edge cases
 

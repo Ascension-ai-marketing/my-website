@@ -1,0 +1,7 @@
+# Files `vercel deploy` must never upload. The Vercel CLI does not read .gitignore.
+# See architecture/deploy.md, Lessons.
+.env
+.env.*
+.vercel
+.tmp
+node_modules

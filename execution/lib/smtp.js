@@ -15,8 +15,9 @@ export function createMailTransport(env = process.env) {
     secure: false,
     requireTLS: true,
     auth: { user: SMTP_USER, pass: SMTP_TOKEN },
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 15_000,
+    // Sized so four failing attempts fit inside api/book.js's time limit (architecture/booking-flow.md).
+    connectionTimeout: 8_000,
+    greetingTimeout: 8_000,
+    socketTimeout: 12_000,
   });
 }

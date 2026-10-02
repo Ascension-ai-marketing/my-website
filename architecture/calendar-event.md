@@ -27,7 +27,7 @@ Create the booking on the owner's Google Calendar: the visitor invited as a gues
 
 1. Insert with `sendUpdates=all` (the user chose to send Google's invitation as well as the confirmation email).
 2. The Meet link is `hangoutLink`, or the `video` entry point in `conferenceData`. If Google answers that the conference is still `pending`, read the event again, up to 3 times, 1 second apart. If there is still no link, the booking stands without one and the record says so.
-3. Conflict check: list events from the slot start to the slot end (`singleEvents=true`). Ignore the new event, cancelled events and events marked Free (`transparency: transparent`). Any remaining event that was created before the new one (by `created` time, then by id) is a conflict.
+3. Conflict check: list only **booking** events (`privateExtendedProperty=source=my-website`) from the slot start to the slot end (`singleEvents=true`). Ignore the new event, cancelled events and events marked Free (`transparency: transparent`). Any remaining booking event created before the new one (by `created` time, then by id) is a conflict. The owner's own events are not looked at here: the free/busy check before the insert already covers them, using Google's own rules for what counts as busy (for example, an invitation the owner declined does not block a slot). Re-checking them with a raw event list would wrongly cancel bookings that free/busy allowed.
 4. On a conflict, delete the new event with `sendUpdates=all` so the visitor receives a cancellation for the invitation they just got.
 
 ## Edge cases

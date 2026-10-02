@@ -14,7 +14,9 @@
     "probe:calendar": "node --env-file=.env execution/probe_google_calendar.js",
     "probe:sheets": "node --env-file=.env execution/probe_google_sheets.js",
     "probe:email": "node --env-file=.env execution/probe_email.js",
-    "probe:vercel": "node execution/probe_vercel.js"
+    "probe:vercel": "node execution/probe_vercel.js",
+    "test:find": "node --env-file=.env execution/test_booking_cleanup.js find",
+    "test:cleanup": "node --env-file=.env execution/test_booking_cleanup.js cleanup"
   },
   "dependencies": {
     "nodemailer": "^10.0.13"

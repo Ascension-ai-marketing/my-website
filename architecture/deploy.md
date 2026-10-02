@@ -46,6 +46,7 @@ vercel deploy
 
 - Only `public/` is published as files, and only `api/` as functions. `CLAUDE.md`, `memory/`, `architecture/` and `execution/` are private and must stay outside both.
 - New code goes to a branch first. Check its preview deployment with `vercel curl <path> --deployment <url>`, then merge to `main`.
+- Never run `vercel deploy` without `.vercelignore` in place; it would upload `.env`.
 - Do not remove `outputDirectory` from `vercel.json`. Without it, Vercel could serve the repository root and expose the private files.
 - Secrets go in Vercel's environment variables, never in `public/` and never in git.
 - A production deployment is public. Changes to `public/` need the user's sign-off before they are pushed to `main`. Work that is not signed off goes on another branch.
@@ -69,6 +70,8 @@ Expected: status Ready, then `200`, then `404`.
 - **`vercel link` writes `.env.local`** containing a short-lived Vercel token, and adds `.vercel` and `.env*` to `.gitignore`. Both stay out of git.
 
 ## Lessons
+
+- **2026-10-02: `vercel deploy` uploaded `.env` with the deployment's source files.** The CLI does not read `.gitignore`. Four CLI deployments (`7afvlgac0`, `6iqjqo8k2`, `g65hfhckc`, `ctkao016z`) contain `src/.env`; the last three hold real secrets. The file is not served to the public (`/.env` is 404), but anyone with access to the Vercel account can read deployment source. Fix: `.vercelignore` now excludes `.env`, `.env.*`, `.vercel`, `.tmp` and `node_modules`. Tested on 2026-10-02 from a scratch copy with dummy env files: only `.vercelignore`, `public/index.html` and `vercel.json` were uploaded. Rules from now on: prefer previews made by `git push` (they contain only committed files); keep `.vercelignore` in place before any `vercel deploy`.
 
 - **2026-10-02: Vercel blocks a push deployment when it cannot tell who authored the commit.** The first push after connecting GitHub produced a deployment in state BLOCKED with the code `COMMIT_AUTHOR_REQUIRED`. The commit was authored as `s s <fvr>` (this machine's global git identity), which GitHub cannot match to any account. Fix: this repository now has its own git identity, the GitHub account `Ascension-ai-marketing` with its GitHub no-reply email, set with `git config --local`. Commits to this repository must keep an author email that belongs to that GitHub account, or the deployment is blocked again. Check with `git config user.email` before committing from a new clone.
 
