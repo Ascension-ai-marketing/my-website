@@ -4,11 +4,12 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 
 ## State
 
-- **Current phase:** B — Blueprint (discovery complete, schema drafted, waiting for the user's approval)
-- **Execution gate:** LOCKED. No logic may be written in `execution/` until all three are true:
+- **Current phase:** L — Link (Blueprint approved by the user on 2026-10-02)
+- **Execution gate:** OPEN since 2026-10-02. All three conditions are met:
   - [x] All five Blueprint discovery questions are answered
-  - [ ] The Data Schema below is defined and the Payload shape is confirmed (drafted 2026-10-02, not yet confirmed)
-  - [ ] `memory/task_plan.md` has an approved Blueprint
+  - [x] The Data Schema below is defined and the Payload shape is confirmed
+  - [x] `memory/task_plan.md` has an approved Blueprint
+- **Phase L gate:** no business logic until every link is green. Only probes and setup tools may be written before that.
 
 ## Blueprint (Phase B)
 
@@ -18,11 +19,11 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 | Integrations | GitHub and Vercel (hosting), Google Calendar, Gmail, Google Sheets or a database, Analytics. Booking is a custom form on the site that creates the event through the Google Calendar API. Credential readiness: nothing set up yet. No Google Cloud project or API credentials exist; the user creates them in Phase L from written setup steps. |
 | Source of Truth | Google Calendar. Availability is read from it and every booking is an event in it. A sheet or database only keeps a copy for lead tracking. |
 | Delivery Payload | A booking is delivered when all four land: (1) an event on the user's Google Calendar with the visitor invited as a guest, (2) a Google Meet link on that event, (3) a confirmation email to the visitor and a notification email to the user, sent via Gmail, (4) a row with the visitor's details and booking time appended to a Google Sheet. |
-| Behavioral Rules | Tone: bold and energetic, and warm and friendly. Rule: bookable hours only (refuse any slot outside set working hours or without minimum notice). See Behavioral Rules below. |
+| Behavioral Rules | Tone: bold and energetic, and warm and friendly. Rules: bookable hours only, never double-book, block spam. See Behavioral Rules below. |
 
 ## Data Schema
 
-**Status: DRAFT. Not confirmed by the user yet.** Values marked "confirmed" came from the user on 2026-10-02. Values marked "proposed" are mine and need a yes.
+**Status: CONFIRMED by the user on 2026-10-02**, including the two proposals (slot alignment and optional fields). Change this section before changing any code that depends on it.
 
 ### Booking rules (configuration)
 
@@ -38,7 +39,7 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 }
 ```
 
-All seven values are confirmed. Proposed: slots start on the hour and half hour, so the last slot of a day is 16:30 to 17:00.
+Slots start on the hour and half hour, so the last slot of a day is 16:30 to 17:00.
 
 ### Operation 1: list available slots
 
@@ -71,7 +72,7 @@ Input shape:
 }
 ```
 
-The six fields are confirmed. Proposed: `phone`, `company_or_website` and `message` are optional.
+`slot_start`, `name` and `email` are required. `phone`, `company_or_website` and `message` are optional.
 
 Output (Payload) shape when the booking succeeds:
 
@@ -102,10 +103,12 @@ Output when the booking is refused. Nothing is created:
 ```json
 {
   "status": "refused",
-  "reason": "outside_bookable_hours | insufficient_notice | beyond_booking_window | invalid_input",
+  "reason": "outside_bookable_hours | insufficient_notice | beyond_booking_window | slot_unavailable | invalid_input | spam",
   "message": "string, shown to the visitor"
 }
 ```
+
+`slot_unavailable` is returned when the calendar shows the slot as taken at the moment of booking. `spam` is returned when the request fails the bot trap or the rate limit.
 
 ### Lead sheet row
 
@@ -118,7 +121,10 @@ Confirmed by the user on 2026-10-02.
 - **Tone:** bold and energetic, and warm and friendly. Applies to the site copy and to both emails.
 - **Bookable hours only:** refuse any slot outside the bookable days and hours, with less than 24 hours of notice, or more than 14 days ahead. A refused booking creates nothing.
 
-Offered and **not** selected by the user, so they are not rules: re-checking the calendar right before creating the event (double-booking guard), spam blocking, and a ban on invented site content. These are raised again as open decisions in `memory/task_plan.md`.
+- **Never double-book:** re-check the calendar immediately before creating the event. If the slot is no longer free, refuse with `slot_unavailable` and create nothing. (Added 2026-10-02.)
+- **Block spam:** refuse a request that fails input validation, the hidden bot trap, or the rate limit. A refused request creates nothing and sends no email. (Added 2026-10-02.)
+
+Offered and not selected by the user, so it is not a rule: a ban on invented site content. In practice the site copy still needs real facts from the user, because the system never guesses at business details.
 
 ## Architectural Invariants
 

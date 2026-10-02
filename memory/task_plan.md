@@ -1,6 +1,6 @@
 # Task Plan
 
-**Blueprint status:** DRAFTED 2026-10-02. NOT APPROVED. Waiting for the user.
+**Blueprint status:** APPROVED by the user on 2026-10-02 ("yes to all, blueprint approved"). Current phase: L (Link).
 
 ## Blueprint
 
@@ -14,7 +14,7 @@ A website that builds credibility and lets a visitor book a 30-minute call. The 
 2. **Integrations:** GitHub and Vercel (hosting), Google Calendar, Gmail, Google Sheets, Analytics. Booking is a custom form using the Google Calendar API. No Google credentials exist yet.
 3. **Source of Truth:** Google Calendar, on `zack@ascension-marketing.ca`.
 4. **Delivery Payload:** calendar event with the visitor as guest, Meet link, confirmation email to the visitor and notification email to the owner via Gmail, and a lead row in a Google Sheet.
-5. **Behavioral Rules:** tone is bold and energetic, and warm and friendly. Bookable hours only.
+5. **Behavioral Rules:** tone is bold and energetic, and warm and friendly. Bookable hours only, never double-book, block spam.
 
 ### Booking rules
 
@@ -32,13 +32,13 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - **SOPs:** one file in `architecture/` per tool, written before the tool.
 - **Google access:** OAuth as the calendar owner, with the refresh token in `.env` locally and in Vercel's environment variables in production. A service account cannot invite guests (see `findings.md`).
 
-### Open decisions (need the user)
+### Decisions
 
-1. **Confirm the payload shape** in `CLAUDE.md`, including the three proposals: slots on the hour and half hour, and `phone`, `company_or_website`, `message` being optional.
-2. **Double-booking guard.** Not selected as a rule. Without a re-check at the moment of booking, two visitors who load the page at the same time can both book the same slot. Recommended: add it.
-3. **Spam blocking.** Not selected as a rule. Without it, a bot can fill the calendar with fake calls and send emails from the owner's Gmail to arbitrary addresses. Recommended: add it.
-4. **Site content.** Nothing is known yet about what the site says: business name, offer, proof, pages. This must come from the user.
-5. **Analytics provider.** Analytics was selected but not which one.
+1. ~~Confirm the payload shape.~~ Confirmed 2026-10-02, including slot alignment and the optional fields.
+2. ~~Double-booking guard.~~ Approved 2026-10-02. Now a behavioral rule.
+3. ~~Spam blocking.~~ Approved 2026-10-02. Now a behavioral rule.
+4. **Site content. STILL OPEN.** Nothing is known yet about what the site says: business name, offer, proof, pages. The user answered "yes to all", which does not supply it. Needed before Phase S.
+5. **Analytics provider. STILL OPEN.** The question was Vercel Web Analytics or Google Analytics; "yes to all" does not pick one. Working default: Vercel Web Analytics, because it needs no extra account or credentials. Not built until the user confirms. Needed before Phase S.
 6. ~~Deploy on push.~~ Resolved 2026-10-02: the repository is connected to the Vercel project.
 
 ## Protocol 0: Initialization
@@ -46,7 +46,7 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Create `memory/` with task_plan, findings, progress, decisions
 - [x] Create `CLAUDE.md` as the Project Constitution
 - [x] Create `architecture/`, `execution/`, `.tmp/`, `.env`
-- [ ] Execution gate cleared (see CLAUDE.md)
+- [x] Execution gate cleared (see CLAUDE.md)
 
 ## Phase B: Blueprint
 
@@ -56,9 +56,9 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] 4. Delivery Payload
 - [x] 5. Behavioral Rules
 - [x] Define the JSON Data Schema (input and output) in CLAUDE.md (draft)
-- [ ] User confirms the Payload shape
+- [x] User confirms the Payload shape
 - [x] Research prior art, log in findings.md
-- [ ] User approves the Blueprint
+- [x] User approves the Blueprint
 
 ## Phase L: Link
 
