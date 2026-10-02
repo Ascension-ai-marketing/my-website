@@ -11,7 +11,14 @@ Research, discoveries, and constraints. Newest first.
 - **Not verified yet:** whether `zack@ascension-marketing.ca` is a Google Workspace account. It decides which OAuth setup applies.
 - **To check before launch:** Vercel's Hobby plan is described as for personal, non-commercial use. A business site that books sales calls may need the Pro plan. I have not confirmed this against Vercel's current terms.
 
-## 2026-10-02: Vercel access
+## 2026-10-02: Vercel, after linking
+
+- **There are two Vercel accounts.** The CLI is signed in as `tools-7405` (team "Ascension AI", slug `ascension-ai1`, Hobby). The project `my-website` lives there. The Vercel connector in Claude is signed in to a different account (below) and cannot see or manage this project.
+- **The Vercel account has no GitHub connection**, so the repository cannot be connected for deploy-on-push until the user adds one.
+- **A new project's first deployment is promoted to production** even when run without `--prod`.
+- The CLI ignores `.env` files when uploading, and `vercel link` adds `.vercel` and `.env*` to `.gitignore`.
+
+## 2026-10-02: Vercel access (connector account)
 
 - The Vercel connector in Claude is signed in as `admin.ascension.marketing@gmail.com` (username `adminascensionmarketing-2247`, Hobby plan). The account has no projects yet.
 - The account's default team has the slug `ascensioin` (spelled that way in Vercel). The connector is **not authorized for that team**: every team-scoped call returns `403 Not authorized: Trying to access resource under scope "ascensioin"`. Creating or reading projects is impossible until the connector is re-authorized with access to the team.

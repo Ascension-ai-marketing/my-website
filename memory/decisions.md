@@ -15,10 +15,16 @@ These are not final until the user approves the Blueprint in `task_plan.md`.
 - **Choice:** `vercel.json` sets `outputDirectory` to `public`. The site lives in `public/`; everything else in the repository is never published.
 - **Why:** The repository root holds private planning files (`CLAUDE.md`, `memory/`, `architecture/`). With no output directory set, Vercel can serve the root as static files, which would make them public.
 
+## 2026-10-02: Deploy with the Vercel CLI until GitHub is connected
+
+- **Choice:** The project was created and linked with the Vercel CLI, under the account the user signed in with (`tools-7405`, team "Ascension AI"). Deploys are run by hand with `vercel deploy --prod`.
+- **Why:** The user picked the CLI route after the connector was refused for its team. Deploy-on-push is still the goal but needs a GitHub connection on the Vercel account.
+
 ## 2026-10-02: Deploy by Git push, no deploy script
 
-- **Choice:** Deployment is triggered by pushing to `main` through Vercel's Git integration. There is no deploy script in `execution/`.
-- **Why:** It is the simplest mechanism and needs nothing installed on this machine. It also keeps `execution/` empty while the Blueprint gate is locked.
+- **Choice:** Deployment is meant to be triggered by pushing to `main` through Vercel's Git integration. There is no deploy script in `execution/`.
+- **Why:** It is the simplest mechanism. It also keeps `execution/` empty while the Blueprint gate is locked.
+- **Status:** not in effect yet. See the entry above.
 
 ## 2026-10-02: Deployment set up before the Blueprint
 

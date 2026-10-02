@@ -155,13 +155,16 @@ No payload formatting defined yet.
 
 | Trigger | Fires when | Does | Status |
 | --- | --- | --- | --- |
-| Vercel deploy | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Vercel publishes `public/` to production | NOT LIVE. The repository side is ready. The Vercel project is not linked yet (see `memory/progress.md`). |
+| Vercel deploy (manual) | `vercel deploy --prod` is run from the project root | Vercel publishes `public/` to production at https://my-website-blue-ten-62.vercel.app | LIVE since 2026-10-02. Serving the placeholder page. |
+| Vercel deploy on push | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Same, without a manual command | NOT CONNECTED. The Vercel account has no GitHub connection yet (see `architecture/deploy.md`). |
 
 Details and the verify commands are in `architecture/deploy.md`. Only `public/` is ever served; the planning files at the root stay private.
 
 ## Maintenance Log
 
-Empty. When something fails, follow the repair loop: analyze the error, patch the script in `execution/`, test the fix, then write the lesson into the matching SOP in `architecture/`.
+- 2026-10-02: a test deployment went to production because a new project's first deployment is always promoted. Nothing private was exposed. Lesson recorded in `architecture/deploy.md`.
+
+When something fails, follow the repair loop: analyze the error, patch the script in `execution/`, test the fix, then write the lesson into the matching SOP in `architecture/`.
 
 ## File Structure
 
