@@ -49,7 +49,9 @@ What was done, errors hit, tests run, results. Newest first.
   - Tests: sign-in tool run with fake credentials. It prints a consent link with the four scopes, `access_type=offline` and `prompt=consent`; ignores a callback with the wrong state and keeps waiting; reports `RED` on denied consent and on a rejected code; leaves `.env` untouched on failure.
   - Preview deployment of the branch (commit `dc3e863`), checked with `vercel curl`: `/` 200; `/api/health` 200 with `{"ok":true,...}`; `/CLAUDE.md`, `/memory/task_plan.md`, `/architecture/google-setup.md`, `/execution/health.js`, `/execution/lib/google_auth.js`, `/package.json`, `/vercel.json`, `/.env`, `/.env.example` all 404. One early request to `/api/health` returned 302 while the access bypass was being set up; four later requests returned 200.
   - Side effect: `vercel curl` created an "automation bypass" secret on the Vercel project so the CLI can reach protected previews. Not created by hand. See findings.
-  - Not done: the Google links. No Google credentials exist yet; the owner has to follow `architecture/google-setup.md`.
+  - Merged to `main` (fast-forward, commit `fb19850`). Production deployment Ready.
+  - Production probe: `npm run probe:vercel -- https://my-website-blue-ten-62.vercel.app` printed `GREEN vercel: page 200, /api/health ok, 7 private paths 404`. `/.env.example` also 404.
+  - Not done: the Google links. No Google credentials exist yet; the owner has to follow `architecture/google-setup.md`. Phase L is halted there.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
