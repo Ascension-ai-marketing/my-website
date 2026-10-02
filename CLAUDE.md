@@ -157,10 +157,10 @@ Status of every link. A link is green only after its probe has passed with real 
 | Google sign-in (OAuth) | GREEN, expires in 7 days | `npm run google:auth` on 2026-10-02 as `zack@ascension-marketing.ca`, all four scopes granted. Expires around 2026-10-09 while the app is in Testing |
 | Google Calendar | GREEN | `npm run probe:calendar`: free/busy readable on the owner's primary calendar. The calendar's own time zone is UTC |
 | Google Sheets | GREEN | `npm run probe:sheets`: sheet "Website Leads", tab "Leads", header row matches the schema |
-| Email (Proton SMTP) | RED: waiting for the owner | `npm run probe:email`. Needs the Proton SMTP token (`architecture/email-setup.md`). Verified so far: a Vercel function can reach `smtp.protonmail.ch:587`. Replaces the Gmail link, which cannot work: the owner's account has no Gmail |
+| Email (Proton SMTP) | GREEN | `npm run probe:email` on 2026-10-02: signed in to `smtp.protonmail.ch:587` with the owner's SMTP token and sent a test email to the owner (`250 2.0.0 Ok: queued`) |
 | Credentials in Vercel | RED: waiting for the owner | `npm run vercel:env`, then `/api/link-check` on a preview must report calendar, sheets and email green. Only `SMTP_HOST` and `SMTP_PORT` are set so far |
 
-Business logic does not start until every row is green. **Phase L is waiting on the email link (the owner's Proton SMTP token) and on the credentials being copied to Vercel.**
+Business logic does not start until every row is green. **Phase L is waiting on one thing: the credentials being copied to Vercel (`npm run vercel:env`, run by the owner), then a green `/api/link-check` on a preview.**
 
 ## Architect (Phase A)
 

@@ -97,6 +97,11 @@ What was done, errors hit, tests run, results. Newest first.
   - Preview of commit `a2c28f6`: `/` 200, `/api/health` 200, `/execution/lib/smtp.js`, `/package.json`, `/package-lock.json`, `/.env` 404. `/api/link-check` ran inside Vercel and answered 503 with all three services RED for missing settings, as expected; it saw `SMTP_HOST` and `SMTP_PORT`, which proves Vercel's environment variables reach the function.
   - Merged to `main` (`a2c28f6`), production Ready. `npm run probe:vercel` GREEN. `/api/link-check` on the production address returns 404, as designed.
   - Waiting on the owner: Proton SMTP token (`env:paste`), then `vercel:env`.
+- The owner ran `npm run vercel:env` first: `RED vercel env: Missing in .env: SMTP_TOKEN`. Nothing was copied (the tool checks every value before setting any). Explained the order again.
+- The owner saved the token: `GREEN env paste: SMTP_TOKEN saved to .env (16 characters)`.
+- `npm run probe:email`: `GREEN email: test email sent from zack@ascension-marketing.ca to zack@ascension-marketing.ca, server said "250 2.0.0 Ok: queued as …"`. One test email sent to the owner.
+- Calendar and Sheets probes re-run: both GREEN.
+- Every local link is green. Remaining for Phase L: the owner runs `npm run vercel:env`, then `/api/link-check` on a preview must be green.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

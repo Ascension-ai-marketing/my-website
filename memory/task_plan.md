@@ -80,8 +80,8 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Sheets probe green
 - [x] Gmail link dropped: the owner's account has no Gmail. Replaced by Proton SMTP (user's decision)
 - [x] Email tools built: `probe:email`, `env:paste`; a Vercel function can reach Proton's server
-- [ ] **Owner:** generate the Proton SMTP token and save it with `npm run env:paste -- SMTP_TOKEN` (`architecture/email-setup.md`)
-- [ ] Email probe green
+- [x] **Owner:** generate the Proton SMTP token and save it with `npm run env:paste -- SMTP_TOKEN` (`architecture/email-setup.md`)
+- [x] Email probe green
 - [ ] **Owner:** copy the credentials to Vercel with `npm run vercel:env`
 - [ ] `/api/link-check` on a preview deployment reports calendar, sheets and email green
 - [ ] Every link green before moving on
