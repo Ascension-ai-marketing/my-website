@@ -42,6 +42,9 @@
 
 ## Phase T: Trigger
 
+- [x] Repository side of the Vercel deploy: `vercel.json`, `public/`, `architecture/deploy.md` (done early, at the user's request, before the Blueprint)
+- [ ] Link the Vercel project to the GitHub repository. BLOCKED: needs the user to give access to their Vercel team (see progress.md)
+- [ ] Verify the production URL with the commands in `architecture/deploy.md`
 - [ ] Move to production
-- [ ] Set up and document the trigger
+- [ ] Set up and document any other triggers
 - [ ] Finalize the Maintenance Log in CLAUDE.md

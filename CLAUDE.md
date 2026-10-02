@@ -64,7 +64,8 @@ No integrations verified yet. Results are logged in `memory/progress.md`.
 
 ## Architect (Phase A)
 
-No SOPs or tools yet.
+- SOPs: `architecture/deploy.md` (deploy to Vercel).
+- Tools: none yet. `execution/` is empty.
 
 ## Stylize (Phase S)
 
@@ -72,7 +73,11 @@ No payload formatting defined yet.
 
 ## Trigger (Phase T)
 
-No triggers configured yet. Each trigger is documented here when it is set up.
+| Trigger | Fires when | Does | Status |
+| --- | --- | --- | --- |
+| Vercel deploy | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Vercel publishes `public/` to production | NOT LIVE. The repository side is ready. The Vercel project is not linked yet (see `memory/progress.md`). |
+
+Details and the verify commands are in `architecture/deploy.md`. Only `public/` is ever served; the planning files at the root stay private.
 
 ## Maintenance Log
 
@@ -83,6 +88,8 @@ Empty. When something fails, follow the repair loop: analyze the error, patch th
 ```
 ├── CLAUDE.md        # This file: constitution and state
 ├── .env             # Credentials (verified in Phase L)
+├── vercel.json      # Tells Vercel to serve public/ only
+├── public/          # The site. The only folder that is published
 ├── memory/          # task_plan.md, findings.md, progress.md, decisions.md
 ├── architecture/    # Layer A: SOPs
 ├── execution/       # Layer T: scripts
