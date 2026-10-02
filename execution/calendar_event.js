@@ -13,8 +13,15 @@ export const BOOKING_SOURCE = 'my-website';
 const MEET_POLL_ATTEMPTS = 3;
 const MEET_POLL_DELAY_MS = 1000;
 
+// The event title. Both the owner and the visitor see it. The live-test cleanup tool uses it too.
+export function eventSummary(name) {
+  return `Discovery call: ${name} | Ascension AI`;
+}
+
 export function buildEventBody(booking, requestId, rules = RULES) {
   const description = [
+    'Free 30-minute discovery call with Ascension AI. Join with the Google Meet link on this event.',
+    '',
     'Booked through the website.',
     '',
     `Name: ${booking.name}`,
@@ -27,7 +34,7 @@ export function buildEventBody(booking, requestId, rules = RULES) {
   ].join('\n');
 
   return {
-    summary: `Call with ${booking.name}`,
+    summary: eventSummary(booking.name),
     description,
     start: { dateTime: toZonedIso(booking.slotStart, rules.timezone), timeZone: rules.timezone },
     end: { dateTime: toZonedIso(booking.slotEnd, rules.timezone), timeZone: rules.timezone },

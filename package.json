@@ -16,7 +16,8 @@
     "probe:email": "node --env-file=.env execution/probe_email.js",
     "probe:vercel": "node execution/probe_vercel.js",
     "test:find": "node --env-file=.env execution/test_booking_cleanup.js find",
-    "test:cleanup": "node --env-file=.env execution/test_booking_cleanup.js cleanup"
+    "test:cleanup": "node --env-file=.env execution/test_booking_cleanup.js cleanup",
+    "dev": "node --env-file=.env execution/dev_server.js"
   },
   "dependencies": {
     "nodemailer": "^10.0.13"

@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import { mock, test } from 'node:test';
 
 import { freeSlots, overlaps } from './availability.js';
-import { buildOwnerEmail, buildVisitorEmail, formatWhen, sendBookingEmails } from './booking_emails.js';
+import { buildOwnerEmail, buildVisitorEmail, escapeHtml, formatWhen, sendBookingEmails } from './booking_emails.js';
 import { RULES, buildSlotGrid, checkSlotRules, slotEnd } from './booking_rules.js';
-import { buildEventBody, createBookingEvent, earlierConflict, meetLinkOf } from './calendar_event.js';
+import { buildEventBody, createBookingEvent, earlierConflict, eventSummary, meetLinkOf } from './calendar_event.js';
 import { buildLeadRow, rowNumberFromRange } from './lead_row.js';
 import { clearTokenCache } from './lib/google_auth.js';
 import { parseIsoWithOffset, toZonedIso, zonedToUtc } from './lib/time.js';
@@ -177,7 +177,9 @@ const booking = {
 
 test('buildEventBody invites the visitor, asks for a Meet link and marks the event as a booking', () => {
   const body = buildEventBody(booking, 'req-1');
-  assert.equal(body.summary, 'Call with Ada Lovelace');
+  assert.equal(body.summary, 'Discovery call: Ada Lovelace | Ascension AI');
+  assert.equal(body.summary, eventSummary('Ada Lovelace'));
+  assert.match(body.description, /^Free 30-minute discovery call with Ascension AI\./);
   assert.deepEqual(body.start, { dateTime: '2026-10-06T14:00:00-04:00', timeZone: TZ });
   assert.deepEqual(body.end, { dateTime: '2026-10-06T14:30:00-04:00', timeZone: TZ });
   assert.deepEqual(body.attendees, [{ email: 'ada@example.com', displayName: 'Ada Lovelace' }]);
@@ -250,21 +252,28 @@ test('formatWhen writes Toronto time', () => {
 });
 
 test('visitor and owner emails go to the right people with the right reply-to', () => {
-  const event = { meetLink: 'https://meet.google.com/xyz', htmlLink: 'https://cal/ev1' };
+  const event = { meetLink: 'https://meet.google.com/xyz', htmlLink: 'https://www.google.com/calendar/event?eid=1' };
   const visitor = buildVisitorEmail(booking, event, 'owner@example.com');
   assert.equal(visitor.to, 'ada@example.com');
   assert.equal(visitor.replyTo, 'owner@example.com');
-  assert.match(visitor.subject, /^Your call is booked: Tuesday, October 6, 2026/);
-  assert.match(visitor.text, /https:\/\/meet\.google\.com\/xyz/);
-  assert.match(visitor.text, /calendar invitation from Google/);
+  assert.match(visitor.subject, /^You're booked: Free discovery call, Tuesday, October 6 at 2:00/);
+  assert.match(visitor.subject, /\(Toronto time\)$/);
+  assert.match(visitor.text, /Join Google Meet: https:\/\/meet\.google\.com\/xyz/);
+  assert.match(visitor.text, /calendar invitation from owner@example\.com/);
+  assert.match(visitor.text, /unknown sender/);
+  assert.match(visitor.html, /href="https:\/\/meet\.google\.com\/xyz"/);
+  assert.match(visitor.html, /You're booked!/);
 
   const owner = buildOwnerEmail(booking, event, 'owner@example.com');
   assert.equal(owner.to, 'owner@example.com');
   assert.equal(owner.replyTo, 'ada@example.com');
-  assert.match(owner.subject, /^New booking: Ada Lovelace, /);
-  assert.match(owner.text, /Calendar event: https:\/\/cal\/ev1/);
+  assert.match(owner.subject, /^New discovery call: Ada Lovelace, /);
+  assert.match(owner.text, /Calendar event: https:\/\/www\.google\.com\/calendar\/event\?eid=1/);
+  assert.match(owner.html, /Open in Google Calendar/);
 
-  assert.match(buildVisitorEmail(booking, { meetLink: null }, 'o@e.co').text, /link will be in your calendar invitation/);
+  const noMeet = buildVisitorEmail(booking, { meetLink: null }, 'o@e.co');
+  assert.match(noMeet.text, /link will be in your calendar invitation/);
+  assert.doesNotMatch(noMeet.html, /Join Google Meet/);
 });
 
 test('sendBookingEmails retries once and reports each email', async () => {
@@ -284,9 +293,10 @@ test('sendBookingEmails retries once and reports each email', async () => {
     },
   };
   const result = await sendBookingEmails(booking, { meetLink: null, htmlLink: null }, { env, createTransport: () => transport });
-  assert.deepEqual(result.visitor_confirmation, { sent: true, message_id: '<2@test>' });
+  assert.equal(result.visitor_confirmation.sent, true);
+  assert.match(result.visitor_confirmation.message_id, /^<\d@test>$/);
   assert.deepEqual(result.owner_notification, { sent: false, message_id: null, error: '535 auth' });
-  assert.deepEqual(sent, ['ada@example.com', 'ada@example.com', 'owner@example.com', 'owner@example.com']);
+  assert.deepEqual([...sent].sort(), ['ada@example.com', 'ada@example.com', 'owner@example.com', 'owner@example.com']);
   assert.equal(closed, true);
 });
 
@@ -323,4 +333,39 @@ test('RULES match the Data Schema', () => {
     [540, 1020, 30, 24, 14],
   );
   assert.deepEqual([RULES.maxUpcomingCallsPerEmail, RULES.maxNewBookingsPerHour, RULES.sendCalendarInvitation], [1, 10, true]);
+});
+
+test('emails escape visitor text in HTML and never link to anything but Google', () => {
+  const nasty = {
+    ...booking,
+    name: '<script>alert(1)</script>',
+    message: 'Click <a href="https://evil.example">here</a>\nLine 2',
+    company_or_website: '"><img src=x onerror=alert(1)>',
+  };
+  const event = { meetLink: 'https://evil.example/meet', htmlLink: 'javascript:alert(1)' };
+  for (const email of [buildVisitorEmail(nasty, event, 'o@e.co'), buildOwnerEmail(nasty, event, 'o@e.co')]) {
+    assert.doesNotMatch(email.html, /<script>/);
+    assert.doesNotMatch(email.html, /<img/);
+    assert.doesNotMatch(email.html, /href="https:\/\/evil/);
+    assert.doesNotMatch(email.html, /javascript:/);
+  }
+  assert.match(buildOwnerEmail(nasty, event, 'o@e.co').html, /here&lt;\/a&gt;<br>Line 2/);
+  assert.equal(escapeHtml(`<&>"'`), '&lt;&amp;&gt;&quot;&#39;');
+});
+
+test('sendBookingEmails sends from the brand name and sends both at once', async () => {
+  const env = { OWNER_EMAIL: 'owner@example.com', SMTP_USER: 'owner@example.com' };
+  const started = [];
+  const transport = {
+    sendMail(message) {
+      started.push(message);
+      return new Promise((resolve) => setTimeout(() => resolve({ messageId: `<${message.to}>` }), 20));
+    },
+    close() {},
+  };
+  const result = await sendBookingEmails(booking, { meetLink: null, htmlLink: null }, { env, createTransport: () => transport });
+  assert.equal(started.length, 2);
+  assert.deepEqual(started[0].from, { name: 'Ascension AI', address: 'owner@example.com' });
+  assert.ok(started.every((message) => message.html && message.text));
+  assert.equal(result.visitor_confirmation.sent && result.owner_notification.sent, true);
 });

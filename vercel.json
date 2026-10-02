@@ -1,8 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "public",
+  "cleanUrls": true,
   "functions": {
-    "api/book.js": { "maxDuration": 180 },
-    "api/slots.js": { "maxDuration": 30 }
+    "api/book.js": {
+      "maxDuration": 180
+    },
+    "api/slots.js": {
+      "maxDuration": 30
+    }
   }
 }

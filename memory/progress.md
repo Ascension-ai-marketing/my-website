@@ -135,3 +135,7 @@ What was done, errors hit, tests run, results. Newest first.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
 - Blueprint written in task_plan.md with six open decisions. Waiting for the user's approval. `execution/` is still empty.
+- **Phase S started** on branch `phase-s` (2026-10-02). User answers: name Ascension AI; services websites and landing pages, AI automation, SEO and content; audience local service businesses; no proof; vercel.app for now; Vercel Web Analytics; "Free discovery call"; second live test approved; logo supplied in chat (not yet as a file).
+  - SOPs first (`architecture/site.md`, email/event/flow updates), then: parallel emails and lead row, HTML emails with escaping, new event title, site page + booking form + privacy page, dry-run local preview (`npm run dev`, launch config `my-website`).
+  - Tests: 51 passing. Local preview checked at desktop width: hero, services, booking picker, dry-run booking. Bug found and fixed: CSS overrode `hidden`, so all three booking panels showed at once.
+  - Not done yet: phone-width check, refusal and "opens soon" screenshots, logo file, enabling Web Analytics (owner must run `vercel project web-analytics enable`), second live test, sign-off. Nothing merged to `main`.

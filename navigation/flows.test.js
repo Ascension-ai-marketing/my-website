@@ -248,3 +248,23 @@ test('readJsonBody accepts small JSON and nothing else', async () => {
   assert.equal(await readJsonBody(req('not json')), null);
   assert.equal(await readJsonBody(req(JSON.stringify({ a: 'x'.repeat(11_000) }))), null);
 });
+
+test('emails and the lead row run at the same time', async () => {
+  let emailsRunning = false;
+  let overlapped = false;
+  const { tools } = fakeTools();
+  tools.sendBookingEmails = async () => {
+    emailsRunning = true;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    emailsRunning = false;
+    return { visitor_confirmation: { sent: true, message_id: 'v' }, owner_notification: { sent: true, message_id: 'o' } };
+  };
+  tools.appendLeadRow = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    overlapped = emailsRunning;
+    return { spreadsheet_id: 's', row_number: 4 };
+  };
+  const result = await bookCall(BODY, { now: NOW, env: {}, tools });
+  assert.equal(result.httpStatus, 200);
+  assert.equal(overlapped, true, 'the lead row was written while the emails were still sending');
+});

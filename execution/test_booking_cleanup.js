@@ -1,7 +1,7 @@
 // Finds and removes the bookings made by the live end-to-end test. Never touches a real booking.
 // Usage: npm run test:find -- <email>     npm run test:cleanup -- <email>
 // SOP: architecture/live-test.md
-import { BOOKING_SOURCE, deleteEvent } from './calendar_event.js';
+import { BOOKING_SOURCE, deleteEvent, eventSummary } from './calendar_event.js';
 import { requireEnv } from './lib/env.js';
 import { CALENDAR_API, SHEETS_API, googleRequest } from './lib/google_api.js';
 import { SCOPES } from './lib/google_auth.js';
@@ -9,6 +9,8 @@ import { LEAD_SHEET_COLUMNS, LEAD_SHEET_TAB } from './lib/lead_sheet.js';
 import { runProbe } from './lib/probe.js';
 
 export const TEST_NAME = 'Live Test (delete me)';
+// The title before Phase S, kept so older test events are still found.
+const TEST_TITLES = [eventSummary(TEST_NAME), `Call with ${TEST_NAME}`];
 
 async function findTestEvents(email, env) {
   const { GOOGLE_CALENDAR_ID } = requireEnv(['GOOGLE_CALENDAR_ID'], env);
@@ -25,7 +27,7 @@ async function findTestEvents(email, env) {
   return (body.items ?? []).filter(
     (event) =>
       event.status !== 'cancelled' &&
-      event.summary === `Call with ${TEST_NAME}` &&
+      TEST_TITLES.includes(event.summary) &&
       (event.attendees ?? []).some((guest) => guest.email?.toLowerCase() === email),
   );
 }

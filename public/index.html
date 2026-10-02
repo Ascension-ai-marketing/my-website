@@ -3,28 +3,183 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coming soon</title>
-  <style>
-    :root { color-scheme: light dark; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 16px;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: light-dark(#fafafa, #111);
-      color: light-dark(#111, #f2f2f2);
-    }
-    main { text-align: center; }
-    h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 3.5rem); letter-spacing: -0.02em; }
-    p { margin: 0; opacity: 0.7; }
-  </style>
+  <title>Ascension AI | Websites, AI automation and SEO for local service businesses</title>
+  <meta name="description" content="Ascension AI builds websites and landing pages, AI automation, and SEO and content for local service businesses. Book a free 30-minute discovery call.">
+  <meta name="theme-color" content="#050608">
+  <meta property="og:title" content="Ascension AI">
+  <meta property="og:description" content="Websites, AI automation and SEO for local service businesses. Book a free 30-minute discovery call.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/app.js"></script>
 </head>
 <body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="wordmark" href="/" aria-label="Ascension AI, home">ASCENSION <span>AI</span></a>
+      <a class="button button-gold button-small" href="#book">Book a free discovery call</a>
+    </div>
+  </header>
+
   <main>
-    <h1>Coming soon</h1>
-    <p>This site is being built.</p>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-grid no-logo" id="hero-grid">
+        <div>
+          <p class="eyebrow">For local service businesses</p>
+          <h1 id="hero-title"><span class="gold">Rise above.</span><br><span class="blue">Automate</span> beyond.</h1>
+          <p class="lede">
+            Ascension AI builds websites and landing pages, AI automation, and SEO and content for local service businesses.
+            Let's talk about yours on a free 30-minute discovery call.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-gold" href="#book">Book a free discovery call</a>
+            <a class="button button-ghost" href="#services">See what we do</a>
+          </div>
+        </div>
+        <figure class="hero-logo" id="hero-logo" hidden>
+          <img src="/logo.png" alt="Ascension AI logo: a golden phoenix with circuit-line wings" width="641" height="501">
+        </figure>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <section id="services" aria-labelledby="services-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="services-title">What we do</h2>
+          <p>Three things, done properly, for businesses that serve their local community.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Websites and landing pages</h3>
+            <p>A clear, mobile-friendly website or landing page that explains what you do and makes it easy for customers to get in touch.</p>
+          </article>
+          <article class="card">
+            <h3>AI automation</h3>
+            <p>Hand repetitive work to AI: answering common questions, following up with leads, and moving information between the tools you already use.</p>
+          </article>
+          <article class="card">
+            <h3>SEO and content</h3>
+            <p>Help people nearby find you on Google, with search-friendly pages and content written for the customers you want.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <section id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="how-title">How the free discovery call works</h2>
+          <p>Thirty minutes, one conversation, no cost.</p>
+        </div>
+        <ol class="steps">
+          <li>
+            <h3>Pick a time</h3>
+            <p>Choose any open 30-minute slot below. Times are shown in Toronto time.</p>
+          </li>
+          <li>
+            <h3>Meet on Google Meet</h3>
+            <p>Tell us about your business, how customers find you today, and what's taking up your time.</p>
+          </li>
+          <li>
+            <h3>See if we're a fit</h3>
+            <p>If we are, we'll talk about next steps. Either way, the call is free.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="book" class="booking" aria-labelledby="book-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="book-title">Book your free discovery call</h2>
+          <p>30 minutes on Google Meet. All times are Toronto time.</p>
+        </div>
+
+        <div class="booking-panel" id="booking-panel">
+          <div class="picker">
+            <p class="panel-title">1. Choose a time</p>
+            <p class="panel-note">Monday to Friday, Toronto time.</p>
+            <div class="days" id="days" role="group" aria-label="Day"></div>
+            <div class="times" id="times" role="group" aria-label="Time"></div>
+            <p class="picker-message" id="picker-message" aria-live="polite">Loading open times…</p>
+          </div>
+
+          <div>
+            <p class="panel-title">2. Your details</p>
+            <p class="panel-note">We'll email you the details and the Google Meet link.</p>
+            <form id="booking-form" novalidate>
+              <p class="selection" id="selection">No time chosen yet.</p>
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" autocomplete="name" required maxlength="100">
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
+              </div>
+              <div class="two-up">
+                <div class="field">
+                  <label for="phone">Phone <span class="optional">(optional)</span></label>
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" pattern="[0-9+().\- ]*">
+                </div>
+                <div class="field">
+                  <label for="company">Company or website <span class="optional">(optional)</span></label>
+                  <input id="company" name="company_or_website" autocomplete="organization" maxlength="200">
+                </div>
+              </div>
+              <div class="field">
+                <label for="message">What would you like to talk about? <span class="optional">(optional)</span></label>
+                <textarea id="message" name="message" maxlength="1000"></textarea>
+              </div>
+              <div class="trap" aria-hidden="true">
+                <label for="homepage">Leave this field empty</label>
+                <input id="homepage" name="homepage" tabindex="-1" autocomplete="off">
+              </div>
+              <button class="button button-gold submit" id="submit" type="submit">Book my free call</button>
+              <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+
+        <div class="booking-panel single" id="closed-panel" hidden>
+          <div class="closed">
+            <h3 id="closed-title">Online booking opens soon</h3>
+            <p id="closed-text">Email <a href="mailto:zack@ascension-marketing.ca">zack@ascension-marketing.ca</a> to book your free discovery call.</p>
+          </div>
+        </div>
+
+        <div class="booking-panel single" id="success-panel" hidden tabindex="-1">
+          <div class="success">
+            <h3>You're booked!</h3>
+            <p class="when" id="success-when"></p>
+            <p><a class="button button-gold" id="success-meet" href="#" target="_blank" rel="noopener">Join Google Meet</a></p>
+            <p id="success-email"></p>
+            <p class="fine">
+              Google will also send you a calendar invitation from zack@ascension-marketing.ca. Accept it to add the call to your calendar.
+              If Gmail says it's from an unknown sender, that's normal for a first invitation.
+            </p>
+            <p class="fine">Need a different time? Reply to the confirmation email.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>Ascension AI</strong> &middot; Rise above. Automate beyond.</p>
+      <nav aria-label="Footer">
+        <a href="mailto:zack@ascension-marketing.ca">zack@ascension-marketing.ca</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>

@@ -5,3 +5,4 @@
 .vercel
 .tmp
 node_modules
+.claude/

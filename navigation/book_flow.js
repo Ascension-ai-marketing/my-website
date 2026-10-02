@@ -97,25 +97,29 @@ export async function bookCall(body, { now = new Date(), env = process.env, tool
     log.conflict_check_error = error.message;
   }
 
-  // 8. Emails. A failure is recorded, not undone.
-  let emails;
-  try {
-    emails = await tools.sendBookingEmails(booking, event, { env });
-  } catch (error) {
-    const failed = { sent: false, message_id: null, error: error.message };
-    emails = { visitor_confirmation: failed, owner_notification: failed };
-  }
-
-  // 9. Lead row. A failure is recorded, not undone.
-  let leadRow = null;
-  for (let attempt = 0; attempt < LEAD_ROW_ATTEMPTS && !leadRow; attempt += 1) {
+  // 8-9. Emails and lead row, at the same time. A failure is recorded, not undone.
+  const sendEmails = async () => {
     try {
-      leadRow = await tools.appendLeadRow(tools.buildLeadRow(booking, event, now), { env });
+      return await tools.sendBookingEmails(booking, event, { env });
     } catch (error) {
-      log.lead_row_error = error.message;
+      const failed = { sent: false, message_id: null, error: error.message };
+      return { visitor_confirmation: failed, owner_notification: failed };
     }
-  }
-  if (leadRow) delete log.lead_row_error;
+  };
+  const writeLeadRow = async () => {
+    let lastError = null;
+    for (let attempt = 0; attempt < LEAD_ROW_ATTEMPTS; attempt += 1) {
+      try {
+        return { row: await tools.appendLeadRow(tools.buildLeadRow(booking, event, now), { env }), error: null };
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    return { row: null, error: lastError.message };
+  };
+  const [emails, leadRowResult] = await Promise.all([sendEmails(), writeLeadRow()]);
+  const leadRow = leadRowResult.row;
+  if (leadRowResult.error) log.lead_row_error = leadRowResult.error;
 
   const slot = {
     start: toZonedIso(booking.slotStart, RULES.timezone),
