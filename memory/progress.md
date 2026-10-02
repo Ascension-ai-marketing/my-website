@@ -94,6 +94,9 @@ What was done, errors hit, tests run, results. Newest first.
   - Local probes: calendar GREEN, sheets GREEN, `RED email: Missing in .env: SMTP_TOKEN` (expected until the owner saves the token).
   - `npm run vercel:env -- SMTP_HOST SMTP_PORT` (two non-secret settings): GREEN; `vercel env ls` shows both for Production and Preview. The secrets have not been copied to Vercel; that run is the owner's.
   - Not tested: a real Proton sign-in or send (no token yet), and `env:paste` with a real value.
+  - Preview of commit `a2c28f6`: `/` 200, `/api/health` 200, `/execution/lib/smtp.js`, `/package.json`, `/package-lock.json`, `/.env` 404. `/api/link-check` ran inside Vercel and answered 503 with all three services RED for missing settings, as expected; it saw `SMTP_HOST` and `SMTP_PORT`, which proves Vercel's environment variables reach the function.
+  - Merged to `main` (`a2c28f6`), production Ready. `npm run probe:vercel` GREEN. `/api/link-check` on the production address returns 404, as designed.
+  - Waiting on the owner: Proton SMTP token (`env:paste`), then `vercel:env`.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
