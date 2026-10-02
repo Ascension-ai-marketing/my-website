@@ -2,7 +2,24 @@
 
 Architectural choices and the reason behind each. Newest first.
 
-## 2026-10-02: Node with no dependencies
+## 2026-10-02: Email goes through Proton SMTP, not Gmail (changes the Blueprint)
+
+- **Choice:** The two booking emails are sent from `zack@ascension-marketing.ca` through `smtp.protonmail.ch:587` with a Proton SMTP token. The Gmail integration, the Gmail probe and the `gmail.send` scope are removed.
+- **Why:** The owner's Google account has no Gmail; the domain's mail is hosted at Proton. The user chose "send from zack@ through an email service" and then Proton SMTP over Resend. Proton needs no new account and no DNS changes, and sent mail lands in the owner's Sent folder.
+- **Cost:** one dependency, `nodemailer`. This ends the "no dependencies" rule below for SMTP only; Google is still called with plain `fetch`.
+- **Rejected:** Resend (new account plus three DNS records at GoDaddy), sending from `admin.ascension.marketing@gmail.com`, and relying on Google Calendar's own invitation email.
+
+## 2026-10-02: One set of checks for local and deployed
+
+- **Choice:** `execution/lib/link_checks.js` holds one function per service. The local probes and `/api/link-check` both call them.
+- **Why:** "Works on this machine" and "works on Vercel" then test exactly the same thing. `/api/link-check` returns 404 in production so it cannot be hit by the public; previews are behind Vercel sign-in.
+
+## 2026-10-02: Secrets are moved by tools the owner runs, never typed into files by hand
+
+- **Choice:** `npm run env:paste -- NAME` saves the clipboard into `.env`; `npm run vercel:env` copies `.env` to Vercel. Both print names only.
+- **Why:** Hand-editing `.env` went wrong once (values pasted over the names). The tools also keep secrets out of the chat and out of command lines.
+
+## 2026-10-02: Node with no dependencies (amended above: nodemailer added for SMTP)
 
 - **Choice:** Tools are plain Node (ES modules) and call Google's REST APIs with the built-in `fetch`. No `googleapis` package, no other dependencies.
 - **Why:** Four simple HTTPS calls do not justify a large SDK. Nothing to install, nothing to update, and the functions stay small.

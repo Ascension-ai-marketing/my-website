@@ -85,6 +85,15 @@ What was done, errors hit, tests run, results. Newest first.
   - `GREEN google sheets: sheet "Website Leads" readable, tabs: Leads`
   - `RED gmail: 400 Precondition check failed.` Not fixable in code: the account has no Gmail mailbox (domain mail is on Proton Mail, confirmed by MX records). Lesson written to the SOP.
 - **Phase L halted on the Gmail link.** Waiting for the user's decision on email sending (task_plan.md, Decisions, item 6).
+- The user decided: send from `zack@` through an email service (option c), then picked Proton SMTP over Resend. They also confirmed the Google Calendar is the one they use.
+  - Research: Proton SMTP details and plan requirement; the domain's DNS records (MX, SPF, DKIM, DMARC, nameservers). Logged in findings.md.
+  - Test: a throwaway preview function opened a connection to `smtp.protonmail.ch:587` from Vercel and got `{"ok":true,"greeting":"220"}` three times. The throwaway branch was deleted afterwards; its preview deployment still exists on Vercel.
+  - SOPs first: rewrote `architecture/link-probes.md`, wrote `architecture/email-setup.md`.
+  - Built: `execution/lib/link_checks.js`, `execution/lib/smtp.js`, `execution/lib/env.js`, `execution/probe_email.js`, `execution/env_paste.js`, `execution/vercel_env_push.js`, `api/link-check.js`. Removed `execution/probe_gmail.js`, `execution/lib/email.js` and the `gmail.send` scope. Added the `nodemailer` dependency.
+  - Tests: `npm test`, 11 passing.
+  - Local probes: calendar GREEN, sheets GREEN, `RED email: Missing in .env: SMTP_TOKEN` (expected until the owner saves the token).
+  - `npm run vercel:env -- SMTP_HOST SMTP_PORT` (two non-secret settings): GREEN; `vercel env ls` shows both for Production and Preview. The secrets have not been copied to Vercel; that run is the owner's.
+  - Not tested: a real Proton sign-in or send (no token yet), and `env:paste` with a real value.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

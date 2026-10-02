@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { health } from '../health.js';
-import { buildRawEmail } from './email.js';
-import { upsertEnvValue } from './env_file.js';
-import { missingScopes, requireEnv } from './google_auth.js';
+import { requireEnv } from './env.js';
+import { secretValueProblem, upsertEnvValue } from './env_file.js';
+import { SCOPES, missingScopes } from './google_auth.js';
 import { buildLeadSheetRequest, LEAD_SHEET_COLUMNS } from './lead_sheet.js';
+import { runLinkChecks } from './link_checks.js';
+import { createMailTransport } from './smtp.js';
 
 test('lead sheet header row matches the schema column order', () => {
   assert.deepEqual(LEAD_SHEET_COLUMNS, [
@@ -50,6 +52,15 @@ test('upsertEnvValue does not match a key that only shares a prefix', () => {
   assert.equal(upsertEnvValue('B_OTHER=1\n', 'B', '2'), 'B_OTHER=1\nB=2\n');
 });
 
+test('secretValueProblem accepts a token and rejects anything that is not one', () => {
+  assert.equal(secretValueProblem('abc123-DEF_456'), null);
+  assert.match(secretValueProblem(''), /empty/);
+  assert.match(secretValueProblem('two words'), /more than one word/);
+  assert.match(secretValueProblem('line1\nline2'), /more than one word/);
+  assert.match(secretValueProblem('x'.repeat(513)), /512 characters/);
+  assert.match(secretValueProblem('SMTP_TOKEN=abc'), /NAME=value/);
+});
+
 test('requireEnv names every missing variable', () => {
   assert.throws(() => requireEnv(['A', 'B', 'C'], { B: 'x' }), /Missing in \.env: A, C/);
   assert.deepEqual(requireEnv(['B'], { B: 'x' }), { B: 'x' });
@@ -60,17 +71,31 @@ test('missingScopes lists required scopes that were not granted', () => {
   assert.deepEqual(missingScopes('s1 s2', ['s1', 's2']), []);
 });
 
-test('buildRawEmail produces a decodable message with an encoded body', () => {
-  const raw = buildRawEmail({ to: 'a@example.com', subject: 'Hello', text: 'Body text' });
-  const message = Buffer.from(raw, 'base64url').toString('utf8');
-  const [headers, body] = message.split('\r\n\r\n');
-  assert.match(headers, /^To: a@example\.com\r\nSubject: Hello\r\n/);
-  assert.equal(Buffer.from(body, 'base64').toString('utf8'), 'Body text');
+test('the sign-in no longer asks for any Gmail scope', () => {
+  assert.equal(Object.values(SCOPES).some((scope) => scope.includes('gmail')), false);
 });
 
-test('buildRawEmail encodes a non-ASCII subject', () => {
-  const raw = buildRawEmail({ to: 'a@example.com', subject: 'Café ☕', text: 'x' });
-  const message = Buffer.from(raw, 'base64url').toString('utf8');
-  assert.match(message, /Subject: =\?UTF-8\?B\?/);
-  assert.doesNotMatch(message.split('\r\n\r\n')[0], /Café/);
+test('mail transport uses STARTTLS on the configured port and refuses plain text', () => {
+  const transport = createMailTransport({
+    SMTP_HOST: 'smtp.example.test',
+    SMTP_PORT: '587',
+    SMTP_USER: 'owner@example.test',
+    SMTP_TOKEN: 'token',
+  });
+  assert.equal(transport.options.host, 'smtp.example.test');
+  assert.equal(transport.options.port, 587);
+  assert.equal(transport.options.secure, false);
+  assert.equal(transport.options.requireTLS, true);
+  transport.close();
+  assert.throws(() => createMailTransport({ SMTP_HOST: 'h' }), /Missing in \.env: SMTP_PORT, SMTP_USER, SMTP_TOKEN/);
+});
+
+test('runLinkChecks reports every service RED, without throwing, when nothing is configured', async () => {
+  const report = await runLinkChecks({});
+  assert.equal(report.ok, false);
+  assert.deepEqual(Object.keys(report.results), ['calendar', 'sheets', 'email']);
+  for (const result of Object.values(report.results)) {
+    assert.equal(result.status, 'RED');
+    assert.match(result.detail, /Missing in \.env/);
+  }
 });

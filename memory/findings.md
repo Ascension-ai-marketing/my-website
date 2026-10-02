@@ -2,6 +2,14 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Email through Proton
+
+- Proton's SMTP submission: host `smtp.protonmail.ch`, port 587, STARTTLS, username is the address, password is an SMTP token generated under Settings, All settings, IMAP/SMTP, SMTP tokens. Available on paid Proton Mail plans with a custom domain address. The token is shown once. Messages sent this way appear in the Sent folder. Source: https://proton.me/support/smtp-submission
+- Verified: the server answers `220` on port 587 from this machine and from a Vercel function (preview deployment). It advertises STARTTLS.
+- The domain's DNS is at GoDaddy (`domaincontrol.com` nameservers); the current website is on Wix. SPF authorizes Proton only; DMARC is `p=quarantine` with relaxed alignment. Sending through Proton passes all of these without DNS changes. Any other sender (such as Resend) would need new DNS records.
+- The user confirmed the Google Calendar on `zack@ascension-marketing.ca` is the calendar they actually use.
+- Vercel: `vercel env add NAME production,preview --force --yes` with the value on stdin works without prompts. A pushed branch once did not get a preview deployment; `vercel deploy` made one.
+
 ## 2026-10-02: Probe results with real credentials
 
 - **`zack@ascension-marketing.ca` is a Google account without Gmail.** Mail for `ascension-marketing.ca` is hosted at Proton Mail (MX `mail.protonmail.ch`, SPF `include:_spf.protonmail.ch`). The Gmail API answers every send with `400 FAILED_PRECONDITION, Precondition check failed`. The Blueprint's "emails via Gmail" cannot be delivered from this account. This is a constraint on the Blueprint, not a bug.

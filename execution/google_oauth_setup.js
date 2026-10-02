@@ -4,8 +4,9 @@ import { createHash, randomBytes } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 
+import { requireEnv } from './lib/env.js';
 import { upsertEnvValue } from './lib/env_file.js';
-import { SCOPES, TOKEN_URL, requireEnv } from './lib/google_auth.js';
+import { SCOPES, TOKEN_URL } from './lib/google_auth.js';
 
 const ENV_PATH = '.env';
 const TIMEOUT_MS = 5 * 60 * 1000;

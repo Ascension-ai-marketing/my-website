@@ -10,3 +10,12 @@ export function upsertEnvValue(text, key, value) {
   const separator = text === '' || text.endsWith('\n') ? '' : '\n';
   return `${text}${separator}${line}\n`;
 }
+
+// Returns why a pasted secret cannot be stored as a .env value, or null if it can.
+export function secretValueProblem(value) {
+  if (value === '') return 'the clipboard is empty';
+  if (/\s/.test(value)) return 'the clipboard holds more than one word or line, which is not a token';
+  if (value.length > 512) return 'the clipboard holds more than 512 characters, which is not a token';
+  if (/^[A-Z][A-Z0-9_]*=/.test(value)) return 'the clipboard holds a NAME=value line; copy only the value';
+  return null;
+}

@@ -3,9 +3,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
 import { upsertEnvValue } from './lib/env_file.js';
-import { SCOPES, getAccessToken } from './lib/google_auth.js';
+import { SCOPES, getAccessToken, googleJson } from './lib/google_auth.js';
 import { buildLeadSheetRequest, LEAD_SHEET_TITLE } from './lib/lead_sheet.js';
-import { googleJson, runProbe } from './lib/probe.js';
+import { runProbe } from './lib/probe.js';
 
 const ENV_PATH = '.env';
 

@@ -16,9 +16,9 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 | Question | Answer |
 | --- | --- |
 | North Star | Build credibility and book calls via Google Calendar. (User's words, 2026-10-02: "build credibility and book calls via google calander") |
-| Integrations | GitHub and Vercel (hosting), Google Calendar, Gmail, Google Sheets or a database, Analytics. Booking is a custom form on the site that creates the event through the Google Calendar API. Credential readiness: nothing set up yet. No Google Cloud project or API credentials exist; the user creates them in Phase L from written setup steps. |
+| Integrations | GitHub and Vercel (hosting), Google Calendar, Google Sheets, Proton Mail SMTP for email (changed from Gmail on 2026-10-02: the owner's account has no Gmail), Analytics. Booking is a custom form on the site that creates the event through the Google Calendar API. Credential readiness: nothing set up yet. No Google Cloud project or API credentials exist; the user creates them in Phase L from written setup steps. |
 | Source of Truth | Google Calendar. Availability is read from it and every booking is an event in it. A sheet or database only keeps a copy for lead tracking. |
-| Delivery Payload | A booking is delivered when all four land: (1) an event on the user's Google Calendar with the visitor invited as a guest, (2) a Google Meet link on that event, (3) a confirmation email to the visitor and a notification email to the user, sent via Gmail, (4) a row with the visitor's details and booking time appended to a Google Sheet. |
+| Delivery Payload | A booking is delivered when all four land: (1) an event on the user's Google Calendar with the visitor invited as a guest, (2) a Google Meet link on that event, (3) a confirmation email to the visitor and a notification email to the user, sent from `zack@ascension-marketing.ca` through Proton Mail SMTP (originally "via Gmail", changed 2026-10-02), (4) a row with the visitor's details and booking time appended to a Google Sheet. |
 | Behavioral Rules | Tone: bold and energetic, and warm and friendly. Rules: bookable hours only, never double-book, block spam. See Behavioral Rules below. |
 
 ## Data Schema
@@ -157,17 +157,17 @@ Status of every link. A link is green only after its probe has passed with real 
 | Google sign-in (OAuth) | GREEN, expires in 7 days | `npm run google:auth` on 2026-10-02 as `zack@ascension-marketing.ca`, all four scopes granted. Expires around 2026-10-09 while the app is in Testing |
 | Google Calendar | GREEN | `npm run probe:calendar`: free/busy readable on the owner's primary calendar. The calendar's own time zone is UTC |
 | Google Sheets | GREEN | `npm run probe:sheets`: sheet "Website Leads", tab "Leads", header row matches the schema |
-| Gmail | **RED: cannot work for this account** | `npm run probe:gmail`: `400 Precondition check failed`. `zack@ascension-marketing.ca` has no Gmail mailbox; the domain's mail is on Proton Mail. Needs a decision from the user on how emails are sent |
-| Google credentials in Vercel | RED: not set up | Set after the local probes are green |
+| Email (Proton SMTP) | RED: waiting for the owner | `npm run probe:email`. Needs the Proton SMTP token (`architecture/email-setup.md`). Verified so far: a Vercel function can reach `smtp.protonmail.ch:587`. Replaces the Gmail link, which cannot work: the owner's account has no Gmail |
+| Credentials in Vercel | RED: waiting for the owner | `npm run vercel:env`, then `/api/link-check` on a preview must report calendar, sheets and email green. Only `SMTP_HOST` and `SMTP_PORT` are set so far |
 
-Business logic does not start until every row is green. **Phase L is halted on the Gmail link.**
+Business logic does not start until every row is green. **Phase L is waiting on the email link (the owner's Proton SMTP token) and on the credentials being copied to Vercel.**
 
 ## Architect (Phase A)
 
-- SOPs: `architecture/deploy.md` (deploy to Vercel), `architecture/link-probes.md` (Phase L probes), `architecture/google-setup.md` (Google credentials, done by the owner).
-- Navigation: `api/` holds thin Vercel function handlers that only call tools. So far: `api/health.js`.
-- Tools: `execution/` holds the probes, the one-time Google sign-in tool, and shared helpers in `execution/lib/`. No business logic yet.
-- Runtime: Node, no dependencies. Google is called over plain HTTPS with `fetch`.
+- SOPs: `architecture/deploy.md` (deploy to Vercel), `architecture/link-probes.md` (Phase L probes), `architecture/google-setup.md` (Google credentials), `architecture/email-setup.md` (Proton SMTP token, done by the owner).
+- Navigation: `api/` holds thin Vercel function handlers that only call tools. So far: `api/health.js` and `api/link-check.js` (preview deployments only).
+- Tools: `execution/` holds the probes, the one-time setup tools (Google sign-in, lead sheet, clipboard-to-`.env`, `.env`-to-Vercel), and shared helpers in `execution/lib/`. No business logic yet.
+- Runtime: Node. Google is called over plain HTTPS with `fetch`. One dependency, `nodemailer`, for SMTP.
 - Commands: `npm test` runs the unit tests. The probe commands are listed in `architecture/link-probes.md`.
 
 ## Stylize (Phase S)
@@ -195,7 +195,7 @@ When something fails, follow the repair loop: analyze the error, patch the scrip
 ├── CLAUDE.md        # This file: constitution and state
 ├── .env             # Credentials (verified in Phase L)
 ├── .env.example     # The variable names, no values
-├── package.json     # Commands (npm test, probes). No dependencies
+├── package.json     # Commands (npm test, probes). One dependency: nodemailer
 ├── vercel.json      # Tells Vercel to serve public/ only
 ├── public/          # The site. The only folder that is published
 ├── api/             # Layer N: Vercel function handlers, served under /api/

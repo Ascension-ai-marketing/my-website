@@ -2,7 +2,7 @@
 
 ## Goal
 
-Give the booking system permission to act as the calendar owner (`zack@ascension-marketing.ca`): read availability, create events, send email, and append rows to the lead sheet.
+Give the booking system permission to act as the calendar owner (`zack@ascension-marketing.ca`): read availability, create events, and append rows to the lead sheet. Email is not sent through Google; see `architecture/email-setup.md`.
 
 These steps are done by the owner, signed in to Google as `zack@ascension-marketing.ca`. Claude never types or sees the credentials.
 
@@ -37,12 +37,12 @@ A service account cannot invite guests to a calendar event without domain-wide d
 1. Open https://console.cloud.google.com/projectcreate
 2. Name it `my-website-booking`. Click **Create**, then select the project.
 
-### 2. Turn on the three APIs
+### 2. Turn on the APIs
 
 Open each link with the project selected and click **Enable**:
 
 - https://console.cloud.google.com/apis/library/calendar-json.googleapis.com
-- https://console.cloud.google.com/apis/library/gmail.googleapis.com
+- (Gmail API: enabled on 2026-10-02 but no longer used.)
 - https://console.cloud.google.com/apis/library/sheets.googleapis.com
 
 ### 3. Configure the consent screen
@@ -96,7 +96,7 @@ The command must run in the project folder, the one that contains `package.json`
 npm --prefix "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite" run google:auth
 ```
 
-Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow all four permissions. The tool writes `GOOGLE_REFRESH_TOKEN` into `.env` and says so.
+Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow every permission it asks for (three since 2026-10-02: Calendar events, Calendar free/busy, Sheets). The tool writes `GOOGLE_REFRESH_TOKEN` into `.env` and says so.
 
 ### 9. Run the probes
 
@@ -112,7 +112,7 @@ Each prints one line starting with `GREEN` or `RED`. The Gmail probe sends you o
 ## Edge cases
 
 - **"Access blocked: this app's request is invalid"** at sign-in: the client is not a Desktop app client. Recreate it in step 5.
-- **A permission checkbox was left unticked** at sign-in: the probe for that service prints `RED` and names the missing scope. Run step 8 again and tick all four.
+- **A permission checkbox was left unticked** at sign-in: the probe for that service prints `RED` and names the missing scope. Run step 8 again and tick every box.
 - **Signed in with the wrong Google account:** the calendar probe prints `RED` with `signed in to the calendar "...", expected zack@ascension-marketing.ca`. Run step 8 again with the right account.
 - **`.env` lines must be `NAME=value`.** Pasting a value over the name (leaving `value=`) makes the tool report the name as missing.
 

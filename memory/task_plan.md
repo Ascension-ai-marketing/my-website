@@ -11,9 +11,9 @@ A website that builds credibility and lets a visitor book a 30-minute call. The 
 ### Discovery answers
 
 1. **North Star:** build credibility and book calls via Google Calendar.
-2. **Integrations:** GitHub and Vercel (hosting), Google Calendar, Gmail, Google Sheets, Analytics. Booking is a custom form using the Google Calendar API. No Google credentials exist yet.
+2. **Integrations:** GitHub and Vercel (hosting), Google Calendar, Google Sheets, Proton Mail SMTP for email (was Gmail), Analytics. Booking is a custom form using the Google Calendar API. No Google credentials exist yet.
 3. **Source of Truth:** Google Calendar, on `zack@ascension-marketing.ca`.
-4. **Delivery Payload:** calendar event with the visitor as guest, Meet link, confirmation email to the visitor and notification email to the owner via Gmail, and a lead row in a Google Sheet.
+4. **Delivery Payload:** calendar event with the visitor as guest, Meet link, confirmation email to the visitor and notification email to the owner, sent from `zack@ascension-marketing.ca` through Proton Mail SMTP (was "via Gmail"), and a lead row in a Google Sheet.
 5. **Behavioral Rules:** tone is bold and energetic, and warm and friendly. Bookable hours only, never double-book, block spam.
 
 ### Booking rules
@@ -39,11 +39,12 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 3. ~~Spam blocking.~~ Approved 2026-10-02. Now a behavioral rule.
 4. **Site content. STILL OPEN.** Nothing is known yet about what the site says: business name, offer, proof, pages. The user answered "yes to all", which does not supply it. Needed before Phase S.
 5. **Analytics provider. STILL OPEN.** The question was Vercel Web Analytics or Google Analytics; "yes to all" does not pick one. Working default: Vercel Web Analytics, because it needs no extra account or credentials. Not built until the user confirms. Needed before Phase S.
-6. **Email sending. OPEN, blocks Phase L.** The Blueprint says "emails via Gmail", but `zack@ascension-marketing.ca` has no Gmail (mail is on Proton). Options to put to the user:
+6. **Email sending. DECIDED 2026-10-02: option c, through Proton SMTP** (the user chose it over Resend). The options considered were:
+   Original problem: The Blueprint says "emails via Gmail", but `zack@ascension-marketing.ca` has no Gmail (mail is on Proton). Options to put to the user:
    - a. Send from the Gmail account that does exist, `admin.ascension.marketing@gmail.com`, with replies directed to `zack@`. Needs one more sign-in for that account.
    - b. Send no custom emails. Let Google Calendar email the visitor its own invitation (it carries the Meet link); the owner sees the booking on the calendar and in the sheet.
    - c. Send from `zack@ascension-marketing.ca` through an email service (for example Resend) or Proton's SMTP. Needs a new account or plan and DNS records on the domain.
-7. **Is the Google Calendar the real calendar? OPEN.** It is empty and set to UTC. If the owner's appointments live elsewhere, the system will offer busy times as free.
+7. ~~Is the Google Calendar the real calendar?~~ The user confirmed on 2026-10-02 that it is the calendar they use. It is set to UTC, so every calendar call passes `America/Toronto` explicitly.
 8. ~~Deploy on push.~~ Resolved 2026-10-02: the repository is connected to the Vercel project.
 
 ## Protocol 0: Initialization
@@ -77,8 +78,12 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Lead sheet created (`npm run setup:sheet`)
 - [x] Calendar probe green
 - [x] Sheets probe green
-- [ ] **Gmail probe RED. HALT.** The owner's account has no Gmail. Needs the user's decision on how the two emails are sent (see "Decisions", item 6)
-- [ ] Put the Google credentials into Vercel's environment variables and prove a deployed function can reach Google
+- [x] Gmail link dropped: the owner's account has no Gmail. Replaced by Proton SMTP (user's decision)
+- [x] Email tools built: `probe:email`, `env:paste`; a Vercel function can reach Proton's server
+- [ ] **Owner:** generate the Proton SMTP token and save it with `npm run env:paste -- SMTP_TOKEN` (`architecture/email-setup.md`)
+- [ ] Email probe green
+- [ ] **Owner:** copy the credentials to Vercel with `npm run vercel:env`
+- [ ] `/api/link-check` on a preview deployment reports calendar, sheets and email green
 - [ ] Every link green before moving on
 
 ## Phase A: Architect
