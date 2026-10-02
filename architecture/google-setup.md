@@ -6,6 +6,26 @@ Give the booking system permission to act as the calendar owner (`zack@ascension
 
 These steps are done by the owner, signed in to Google as `zack@ascension-marketing.ca`. Claude never types or sees the credentials.
 
+## Current state (2026-10-02)
+
+Steps 1 to 3 are done, in the Google account `zack@ascension-marketing.ca`:
+
+- Project `my-website-booking` (id `my-website-booking-510420`), no organization, no billing account.
+- Calendar, Gmail and Sheets APIs enabled.
+- Consent screen created: app name `My Website Booking`, audience External.
+- **Step 4 is NOT done.** Google keeps the Publish button disabled: "To publish your app, you must complete your configuration on the Branding page." The app is in **Testing**, with `zack@ascension-marketing.ca` added as a test user. Sign-in works in Testing, but **the sign-in expires after 7 days**. See "Before going live" below.
+
+Still to do, by the owner: steps 5 to 8.
+
+Two other projects exist in the same account from earlier attempts, "My First Project" and "calander hosting" (both in the organization `zack-org`). They are not used by this system.
+
+## Before going live
+
+The app must not be left in Testing in production, or bookings stop a week after each sign-in. One of these has to happen before Phase T:
+
+- **Publish it.** Fill in the Branding page (home page and privacy policy links on the site's real domain), then Audience, Publish app. Then run step 8 again.
+- **Or make it Internal.** Move the project into the organization `zack-org`, then Audience, Make internal. Projects in that organization are attached to the billing account. Then run step 8 again.
+
 ## Why OAuth and not a service account
 
 A service account cannot invite guests to a calendar event without domain-wide delegation. Inviting the visitor is part of the payload. See `memory/findings.md`.
@@ -45,8 +65,8 @@ Skip this step if you chose Internal.
 
 ### 5. Create the OAuth client
 
-1. Open https://console.cloud.google.com/auth/clients and click **Create client**.
-2. Application type: **Desktop app**. Name: `my-website-local`. Click **Create**.
+1. Open https://console.cloud.google.com/auth/clients?project=my-website-booking-510420 and click **Create client**. Check that the account shown top right is `zack@ascension-marketing.ca`.
+2. Application type: **Desktop app**. Any name. Click **Create**.
 3. Copy the **Client ID** and **Client secret**.
 
 ### 6. Create the lead sheet
@@ -96,6 +116,10 @@ Each prints one line starting with `GREEN` or `RED`. The Gmail probe sends you o
 - **Signed in with the wrong Google account:** the calendar probe prints `RED` with "notFound", because `GOOGLE_CALENDAR_ID` names the owner's calendar by its email address and another account cannot see it. Run step 8 again with the right account.
 
 ## Lessons
+
+- **2026-10-02: an External app cannot be published straight after creating the consent screen.** The Publish app button is disabled until the Branding page is complete. Step 4 as written here ("click Publish app") does not work on a fresh project. Workaround for development: add the owner as a test user (Audience, Test users, Add users). The 7-day expiry then applies until the app is published or made Internal.
+- **2026-10-02: choosing an organization on the New Project form attaches a billing account.** With `zack-org` selected the form adds a Billing account field with no "none" option. With "No organization" there is no billing, but the Internal audience is unavailable.
+- **2026-10-02: check for existing projects before creating one.** The account already had two projects from earlier the same day.
 
 - **2026-10-02: `npm run google:auth` failed with "Could not read package.json".** It was run from `~/Desktop/claude`, the parent folder, which has no `package.json`. The commands in this SOP now use `--prefix` so they work from any folder. The same applies to the probes in step 9.
 - **2026-10-02: the sign-in tool needs steps 1 to 7 done first.** With `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` empty it prints `RED google sign-in: Missing in .env: ...` and stops.

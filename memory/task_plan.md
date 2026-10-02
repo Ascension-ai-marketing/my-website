@@ -66,7 +66,8 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Build a minimal probe script per service in `execution/`
 - [x] Prove an `api/` function runs alongside `public/` on Vercel
 - [x] GitHub and Vercel links green
-- [ ] **Owner:** create the Google Cloud project, OAuth client and lead sheet (steps 1 to 7 of `architecture/google-setup.md`)
+- [x] Google Cloud project, three APIs, consent screen, test user (steps 1 to 3 of `architecture/google-setup.md`, done in the browser pane)
+- [ ] **Owner:** create the OAuth client, create the lead sheet, paste the three values into `.env` (steps 5 to 7)
 - [ ] **Owner:** sign in once with `npm run google:auth` (step 8)
 - [ ] Calendar, Sheets and Gmail probes green
 - [ ] Put the Google credentials into Vercel's environment variables and prove a deployed function can reach Google
@@ -91,6 +92,7 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Create the Vercel project `my-website` and link this folder to it with the Vercel CLI
 - [x] Verify the production URL with the commands in `architecture/deploy.md` (placeholder page: 200, private files: 404)
 - [x] Connect the GitHub repository so a push to `main` deploys
+- [ ] **Take the Google app out of Testing** (publish it, or make it Internal) and sign in again. Otherwise bookings stop 7 days after each sign-in
 - [ ] Move to production
 - [ ] Set up and document any other triggers
 - [ ] Finalize the Maintenance Log in CLAUDE.md

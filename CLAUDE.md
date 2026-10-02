@@ -153,7 +153,8 @@ Status of every link. A link is green only after its probe has passed with real 
 | GitHub push | GREEN | Pushes accepted over HTTPS; remote matches local |
 | Vercel deploy on push | GREEN | Push to `main` deployed to production, state Ready |
 | Vercel function (`api/` calling `execution/`) | GREEN | `/api/health` returns `ok: true`; `npm run probe:vercel` |
-| Google sign-in (OAuth) | RED: not set up | Waiting for the owner to follow `architecture/google-setup.md` |
+| Google Cloud project, APIs, consent screen | DONE, with a caveat | Project `my-website-booking-510420` under `zack@ascension-marketing.ca`. App is in Testing, so a sign-in lasts 7 days. Must be fixed before going live (`architecture/google-setup.md`) |
+| Google sign-in (OAuth) | RED: not set up | Waiting for the owner: create the OAuth client, fill `.env`, run `npm run google:auth` |
 | Google Calendar | RED: not set up | `npm run probe:calendar` |
 | Gmail | RED: not set up | `npm run probe:gmail` |
 | Google Sheets | RED: not set up | `npm run probe:sheets` |

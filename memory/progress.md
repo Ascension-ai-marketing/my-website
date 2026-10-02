@@ -62,6 +62,15 @@ What was done, errors hit, tests run, results. Newest first.
   - `npm run probe:sheets`: `RED google sheets: Missing in .env: LEAD_SHEET_ID`
   - Cause: `.env` has not been edited since the lines were laid out. The client id, client secret and sheet id are still blank and there is no `GOOGLE_REFRESH_TOKEN` line, so no sign-in has completed in this project. The terminal shows only the earlier failed run. No other recently edited `.env` exists on the machine.
   - Phase L stays halted at the owner's steps 1 to 8 of `architecture/google-setup.md`.
+- The user ran the sign-in again: `RED google sign-in: Missing in .env: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET`. They said Google Cloud was not done yet and asked for steps 1 to 4 to be done for them, under `zack@ascension-marketing.ca`, with no organization and no billing.
+- Google Cloud setup done in the browser pane (account 1, `zack@ascension-marketing.ca`):
+  - Created project `my-website-booking` (id `my-website-booking-510420`), no organization, no billing.
+  - Calendar, Gmail and Sheets APIs enabled. Verified on the project's API dashboard: all three are listed.
+  - Consent screen created: app `My Website Booking`, support and contact email `zack@ascension-marketing.ca`, audience External. The user clicked the agreement and Create themselves.
+  - Error: Publish app is disabled ("you must complete your configuration on the Branding page"). Not fixed. Workaround: added `zack@ascension-marketing.ca` as a test user (verified: "1 user (1 test, 0 other)"). The app is in Testing, so the sign-in will expire after 7 days. Lesson and the two ways out written to `architecture/google-setup.md`.
+  - Left the "Create OAuth client ID" form open with Desktop app selected, for the owner to click Create. Claude does not view or copy the client secret.
+  - Found: two earlier projects in the account ("My First Project", "calander hosting"), created by the user. Left untouched.
+  - Mistake: on the New Project form, text meant for the project name was typed while the layout had shifted and landed nowhere; the form was reloaded and redone. Nothing was created by the stray input.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

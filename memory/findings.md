@@ -2,6 +2,14 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Google Cloud setup
+
+- The browser pane is signed in to two Google accounts. `admin.ascension.marketing@gmail.com` is account 0 and `zack@ascension-marketing.ca` is account 1 (`?authuser=1` in Google Cloud URLs).
+- `zack@ascension-marketing.ca` belongs to a Google Cloud organization named `zack-org` and has a free-trial billing account ("My Billing Account"). A project created inside the organization gets the billing account attached; a project with "No organization" has none.
+- The Internal audience is only available to a project inside an organization. The project for this system has none, so it is External.
+- **Google no longer lets a fresh External app be published.** Publish app stays disabled with "you must complete your configuration on the Branding page". The app is in Testing, which means the 7-day sign-in expiry applies. This contradicts the plan in the entry below ("set the app to In production") until the Branding page is filled in.
+- The account already had two projects created by the user earlier the same day: "My First Project" (Gmail, Calendar and Drive APIs enabled) and "calander hosting". Neither is used.
+
 ## 2026-10-02: Phase L, Vercel functions
 
 - **Proven:** a function in `api/` runs alongside `outputDirectory: public` and can import from `execution/`. Files in `execution/`, `package.json` and the planning folders are still not served. This closes the "not verified yet" item below.
