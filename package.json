@@ -1,0 +1,16 @@
+{
+  "name": "my-website",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "google:auth": "node --env-file=.env execution/google_oauth_setup.js",
+    "probe:calendar": "node --env-file=.env execution/probe_google_calendar.js",
+    "probe:gmail": "node --env-file=.env execution/probe_gmail.js",
+    "probe:sheets": "node --env-file=.env execution/probe_google_sheets.js",
+    "probe:vercel": "node execution/probe_vercel.js"
+  }
+}
