@@ -127,7 +127,10 @@ What was done, errors hit, tests run, results. Newest first.
   - **Live end-to-end test: passed.** Details in `architecture/live-test.md`. Booked, Meet link created, event and row found, both emails sent and both found in the visitor's Gmail inbox, second booking refused as `already_booked`, booked slot removed from the list. Server time 7.5 seconds.
   - Cleanup verified: test event and row removed, slot offered again, sheet back to the header only, hourly count 0. The invitation and confirmation emails remain in the test inbox.
   - Not done in Phase A: the speed-up (deferred to Phase S, see decisions.md), and checking the owner notification in the Proton inbox (Claude cannot read it).
+- Merged `phase-a-booking` into `main` (fast-forward, `f570538`). Production Ready.
+  - Production checks: `GET /api/slots` 404; `POST /api/book` with a valid-looking body 404; `/api/link-check` 404; `/navigation/book_flow.js`, `/execution/calendar_event.js`, `/.vercelignore`, `/package-lock.json` 404; `npm run probe:vercel` GREEN. `BOOKING_LIVE` is not set in Vercel.
 - **Phase A complete.** Booking stays off on the live site (`BOOKING_LIVE` not set).
+- Waiting on the owner: remove the three CLI deployments that contain `.env`; confirm the owner notification arrived in the Proton inbox; delete the old Proton SMTP token if not done.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

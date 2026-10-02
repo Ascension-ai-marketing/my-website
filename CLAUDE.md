@@ -204,7 +204,7 @@ No payload formatting defined yet.
 | --- | --- | --- | --- |
 | Vercel deploy on push | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Vercel publishes `public/` to production at https://my-website-blue-ten-62.vercel.app | CONNECTED since 2026-10-02. Serving the placeholder page. |
 | Vercel deploy (manual fallback) | `vercel deploy --prod` is run from the project root | Same, from this machine | Available. Used for the first deployment. Needs `.vercelignore` in place (see the Maintenance Log). |
-| Booking switch | The Vercel environment variable `BOOKING_LIVE` is set to `true` for Production, followed by a deploy | `/api/slots` and `/api/book` start answering on the live site | OFF. Not set. Turning it on needs the user's sign-off (Phase T). |
+| Booking switch | The Vercel environment variable `BOOKING_LIVE` is set to `true` for Production, followed by a deploy | `/api/slots` and `/api/book` start answering on the live site | OFF. Not set. Verified on production 2026-10-02 (commit `f570538`): `GET /api/slots`, `POST /api/book` and `/api/link-check` all return 404. Turning it on needs the user's sign-off (Phase T). |
 
 Details and the verify commands are in `architecture/deploy.md`. Only `public/` is ever served; the planning files at the root stay private.
 
