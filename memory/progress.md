@@ -26,6 +26,10 @@ What was done, errors hit, tests run, results. Newest first.
   - Ran `vercel deploy` expecting a private preview. Vercel promoted it to production because it was the project's first deployment. Lesson written to `architecture/deploy.md`.
   - Verified the live site https://my-website-blue-ten-62.vercel.app: `/` returns 200 with the placeholder; `/CLAUDE.md`, `/memory/task_plan.md`, `/memory/findings.md`, `/architecture/deploy.md`, `/.env`, `/.env.local`, `/vercel.json`, `/.gitignore` all return 404.
   - The connector route stayed closed (same 403) and the built-in browser was not signed in.
+- Retried connecting GitHub to Vercel at the user's request. NOT DONE.
+  - `vercel git connect --yes` failed three more times with the same error: no GitHub Login Connection on the Vercel account `tools-7405`.
+  - The built-in browser still redirects `vercel.com/account/settings/authentication` to the login page, and no Chrome browser is connected to the session, so the connection cannot be added from here.
+  - Waiting on the user to sign in to Vercel in the browser pane, or to add the GitHub connection in their own browser.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
