@@ -57,6 +57,11 @@ What was done, errors hit, tests run, results. Newest first.
   - Also found: `.env` had none of the values yet, so the tool would have stopped anyway.
   - Patch: the SOP commands now use `--prefix` with the project path. `.env` now has the five lines laid out, with the calendar id and owner email filled in (not secrets) and the client id, client secret and sheet id left blank for the owner.
   - Test: `npm --prefix "<project>" run google:auth` from another folder prints `RED google sign-in: Missing in .env: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET`, as expected until the owner fills them in.
+- The user reported the sign-in as green and asked for the probes. Probes run; both RED. The Gmail probe was not run.
+  - `npm run probe:calendar`: `RED google calendar: Missing in .env: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN`
+  - `npm run probe:sheets`: `RED google sheets: Missing in .env: LEAD_SHEET_ID`
+  - Cause: `.env` has not been edited since the lines were laid out. The client id, client secret and sheet id are still blank and there is no `GOOGLE_REFRESH_TOKEN` line, so no sign-in has completed in this project. The terminal shows only the earlier failed run. No other recently edited `.env` exists on the machine.
+  - Phase L stays halted at the owner's steps 1 to 8 of `architecture/google-setup.md`.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
