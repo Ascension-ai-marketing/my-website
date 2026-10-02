@@ -37,6 +37,9 @@ What was done, errors hit, tests run, results. Newest first.
   - Error: `seatBlock.blockCode = COMMIT_AUTHOR_REQUIRED`. The commit author `s s <fvr>` matches no GitHub account (GitHub shows no author login for the commit).
   - Patch: set a repo-local git identity for this repository, the GitHub account `Ascension-ai-marketing` with its no-reply email. The global git config was not changed and earlier commits were not rewritten.
   - Lesson written to `architecture/deploy.md`.
+  - Retest (commit `36cac71`, authored with the new identity): Vercel deployed it from the push, state READY, target production. GitHub shows the Vercel status "Deployment has completed".
+  - Verified live: https://my-website-blue-ten-62.vercel.app now points at that deployment; `/` returns 200 with the placeholder; `/CLAUDE.md`, `/memory/progress.md`, `/architecture/deploy.md`, `/.env`, `/vercel.json` return 404.
+  - Deploy-on-push is working.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
