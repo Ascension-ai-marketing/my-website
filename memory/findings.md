@@ -2,6 +2,14 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Phase L, Vercel functions
+
+- **Proven:** a function in `api/` runs alongside `outputDirectory: public` and can import from `execution/`. Files in `execution/`, `package.json` and the planning folders are still not served. This closes the "not verified yet" item below.
+- Adding `package.json` (no dependencies, no build script) did not change what Vercel serves.
+- Preview deployments (any branch other than `main`) are behind Vercel sign-in: an anonymous request gets a 302. The production address `my-website-blue-ten-62.vercel.app` is public.
+- **`vercel curl` creates a protection-bypass secret on the project** the first time it is used ("automation bypass" in the project's Deployment Protection settings). Anyone holding that secret can open protected previews. It can be revoked there; `vercel curl` would create a new one on next use.
+- `.gitignore` as written by `vercel link` (`.env*`) also ignored `.env.example`. An exception line was added so the template is tracked.
+
 ## 2026-10-02: Research for the booking system
 
 - **A Google service account cannot do this job.** The Calendar API refuses with "Service accounts cannot invite attendees without Domain-Wide Delegation of Authority". Inviting the visitor as a guest is part of the payload, so the system must act as the calendar owner through OAuth (a stored refresh token), or use a service account with domain-wide delegation set up by a Google Workspace admin. Sources: https://support.google.com/calendar/thread/299552457 and https://stackoverflow.com/questions/78580627

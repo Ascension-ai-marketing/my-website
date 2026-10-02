@@ -62,10 +62,14 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 
 ## Phase L: Link
 
-- [ ] User creates the Google Cloud project and OAuth credentials from written steps
-- [ ] Verify every credential and API connection: Calendar, Gmail, Sheets, Vercel
-- [ ] Build a minimal probe script per service in `execution/`
-- [ ] Prove an `api/` function runs alongside `public/` on Vercel
+- [x] Write the setup steps for the owner: `architecture/google-setup.md`
+- [x] Build a minimal probe script per service in `execution/`
+- [x] Prove an `api/` function runs alongside `public/` on Vercel
+- [x] GitHub and Vercel links green
+- [ ] **Owner:** create the Google Cloud project, OAuth client and lead sheet (steps 1 to 7 of `architecture/google-setup.md`)
+- [ ] **Owner:** sign in once with `npm run google:auth` (step 8)
+- [ ] Calendar, Sheets and Gmail probes green
+- [ ] Put the Google credentials into Vercel's environment variables and prove a deployed function can reach Google
 - [ ] Every link green before moving on
 
 ## Phase A: Architect

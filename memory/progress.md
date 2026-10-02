@@ -40,6 +40,16 @@ What was done, errors hit, tests run, results. Newest first.
   - Retest (commit `36cac71`, authored with the new identity): Vercel deployed it from the push, state READY, target production. GitHub shows the Vercel status "Deployment has completed".
   - Verified live: https://my-website-blue-ten-62.vercel.app now points at that deployment; `/` returns 200 with the placeholder; `/CLAUDE.md`, `/memory/progress.md`, `/architecture/deploy.md`, `/.env`, `/vercel.json` return 404.
   - Deploy-on-push is working.
+- Blueprint approved by the user ("yes to all, blueprint approved"). Payload shape confirmed; double-booking guard and spam blocking added as rules. Site content and analytics provider were not answered and stay open. Execution gate opened. Commit `82cced7`.
+- Phase L started on branch `phase-l-link`.
+  - SOPs written first: `architecture/link-probes.md`, `architecture/google-setup.md`.
+  - Built: probes for Calendar, Gmail, Sheets and Vercel; the one-time Google sign-in tool; `api/health.js` calling `execution/health.js`; `package.json` with the commands; `.env.example`.
+  - Tests: `npm test`, 8 passing (health payload, `.env` upsert, missing-variable and missing-scope checks, email encoding).
+  - Tests: each Google probe run with an empty `.env` prints `RED ... Missing in .env: <name>` and exits 1, without a network call.
+  - Tests: sign-in tool run with fake credentials. It prints a consent link with the four scopes, `access_type=offline` and `prompt=consent`; ignores a callback with the wrong state and keeps waiting; reports `RED` on denied consent and on a rejected code; leaves `.env` untouched on failure.
+  - Preview deployment of the branch (commit `dc3e863`), checked with `vercel curl`: `/` 200; `/api/health` 200 with `{"ok":true,...}`; `/CLAUDE.md`, `/memory/task_plan.md`, `/architecture/google-setup.md`, `/execution/health.js`, `/execution/lib/google_auth.js`, `/package.json`, `/vercel.json`, `/.env`, `/.env.example` all 404. One early request to `/api/health` returned 302 while the access bypass was being set up; four later requests returned 200.
+  - Side effect: `vercel curl` created an "automation bypass" secret on the Vercel project so the CLI can reach protected previews. Not created by hand. See findings.
+  - Not done: the Google links. No Google credentials exist yet; the owner has to follow `architecture/google-setup.md`.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

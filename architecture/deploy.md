@@ -2,7 +2,7 @@
 
 ## Goal
 
-Put the contents of `public/` live on Vercel. Nothing else in the repository is ever served.
+Put the site live on Vercel: the pages in `public/` and the functions in `api/` (reachable under `/api/`). No other file in the repository is ever served.
 
 ## Inputs
 
@@ -44,7 +44,8 @@ vercel deploy
 
 ## Rules
 
-- Only `public/` is published. `CLAUDE.md`, `memory/`, `architecture/` and `execution/` hold private planning and must stay outside `public/`.
+- Only `public/` is published as files, and only `api/` as functions. `CLAUDE.md`, `memory/`, `architecture/` and `execution/` are private and must stay outside both.
+- New code goes to a branch first. Check its preview deployment with `vercel curl <path> --deployment <url>`, then merge to `main`.
 - Do not remove `outputDirectory` from `vercel.json`. Without it, Vercel could serve the repository root and expose the private files.
 - Secrets go in Vercel's environment variables, never in `public/` and never in git.
 - A production deployment is public. Changes to `public/` need the user's sign-off before they are pushed to `main`. Work that is not signed off goes on another branch.

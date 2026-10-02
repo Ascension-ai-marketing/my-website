@@ -146,12 +146,28 @@ Offered and not selected by the user, so it is not a rule: a ban on invented sit
 
 ## Link (Phase L)
 
-No integrations verified yet. Results are logged in `memory/progress.md`.
+Status of every link. A link is green only after its probe has passed with real credentials. Details in `architecture/link-probes.md`, results in `memory/progress.md`.
+
+| Link | Status | How it was verified |
+| --- | --- | --- |
+| GitHub push | GREEN | Pushes accepted over HTTPS; remote matches local |
+| Vercel deploy on push | GREEN | Push to `main` deployed to production, state Ready |
+| Vercel function (`api/` calling `execution/`) | GREEN | `/api/health` returns `ok: true`; `npm run probe:vercel` |
+| Google sign-in (OAuth) | RED: not set up | Waiting for the owner to follow `architecture/google-setup.md` |
+| Google Calendar | RED: not set up | `npm run probe:calendar` |
+| Gmail | RED: not set up | `npm run probe:gmail` |
+| Google Sheets | RED: not set up | `npm run probe:sheets` |
+| Google credentials in Vercel | RED: not set up | Set after the local probes are green |
+
+Business logic does not start until every row is green.
 
 ## Architect (Phase A)
 
-- SOPs: `architecture/deploy.md` (deploy to Vercel).
-- Tools: none yet. `execution/` is empty.
+- SOPs: `architecture/deploy.md` (deploy to Vercel), `architecture/link-probes.md` (Phase L probes), `architecture/google-setup.md` (Google credentials, done by the owner).
+- Navigation: `api/` holds thin Vercel function handlers that only call tools. So far: `api/health.js`.
+- Tools: `execution/` holds the probes, the one-time Google sign-in tool, and shared helpers in `execution/lib/`. No business logic yet.
+- Runtime: Node, no dependencies. Google is called over plain HTTPS with `fetch`.
+- Commands: `npm test` runs the unit tests. The probe commands are listed in `architecture/link-probes.md`.
 
 ## Stylize (Phase S)
 
@@ -177,8 +193,11 @@ When something fails, follow the repair loop: analyze the error, patch the scrip
 ```
 ├── CLAUDE.md        # This file: constitution and state
 ├── .env             # Credentials (verified in Phase L)
+├── .env.example     # The variable names, no values
+├── package.json     # Commands (npm test, probes). No dependencies
 ├── vercel.json      # Tells Vercel to serve public/ only
 ├── public/          # The site. The only folder that is published
+├── api/             # Layer N: Vercel function handlers, served under /api/
 ├── memory/          # task_plan.md, findings.md, progress.md, decisions.md
 ├── architecture/    # Layer A: SOPs
 ├── execution/       # Layer T: scripts
