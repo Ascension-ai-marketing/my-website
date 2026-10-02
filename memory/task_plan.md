@@ -39,7 +39,12 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 3. ~~Spam blocking.~~ Approved 2026-10-02. Now a behavioral rule.
 4. **Site content. STILL OPEN.** Nothing is known yet about what the site says: business name, offer, proof, pages. The user answered "yes to all", which does not supply it. Needed before Phase S.
 5. **Analytics provider. STILL OPEN.** The question was Vercel Web Analytics or Google Analytics; "yes to all" does not pick one. Working default: Vercel Web Analytics, because it needs no extra account or credentials. Not built until the user confirms. Needed before Phase S.
-6. ~~Deploy on push.~~ Resolved 2026-10-02: the repository is connected to the Vercel project.
+6. **Email sending. OPEN, blocks Phase L.** The Blueprint says "emails via Gmail", but `zack@ascension-marketing.ca` has no Gmail (mail is on Proton). Options to put to the user:
+   - a. Send from the Gmail account that does exist, `admin.ascension.marketing@gmail.com`, with replies directed to `zack@`. Needs one more sign-in for that account.
+   - b. Send no custom emails. Let Google Calendar email the visitor its own invitation (it carries the Meet link); the owner sees the booking on the calendar and in the sheet.
+   - c. Send from `zack@ascension-marketing.ca` through an email service (for example Resend) or Proton's SMTP. Needs a new account or plan and DNS records on the domain.
+7. **Is the Google Calendar the real calendar? OPEN.** It is empty and set to UTC. If the owner's appointments live elsewhere, the system will offer busy times as free.
+8. ~~Deploy on push.~~ Resolved 2026-10-02: the repository is connected to the Vercel project.
 
 ## Protocol 0: Initialization
 
@@ -67,9 +72,12 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Prove an `api/` function runs alongside `public/` on Vercel
 - [x] GitHub and Vercel links green
 - [x] Google Cloud project, three APIs, consent screen, test user (steps 1 to 3 of `architecture/google-setup.md`, done in the browser pane)
-- [ ] **Owner:** create the OAuth client, create the lead sheet, paste the three values into `.env` (steps 5 to 7)
-- [ ] **Owner:** sign in once with `npm run google:auth` (step 8)
-- [ ] Calendar, Sheets and Gmail probes green
+- [x] OAuth client created and `.env` filled in by the owner
+- [x] Sign-in done (`npm run google:auth`), all four scopes granted
+- [x] Lead sheet created (`npm run setup:sheet`)
+- [x] Calendar probe green
+- [x] Sheets probe green
+- [ ] **Gmail probe RED. HALT.** The owner's account has no Gmail. Needs the user's decision on how the two emails are sent (see "Decisions", item 6)
 - [ ] Put the Google credentials into Vercel's environment variables and prove a deployed function can reach Google
 - [ ] Every link green before moving on
 

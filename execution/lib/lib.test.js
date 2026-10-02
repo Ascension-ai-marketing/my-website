@@ -5,6 +5,28 @@ import { health } from '../health.js';
 import { buildRawEmail } from './email.js';
 import { upsertEnvValue } from './env_file.js';
 import { missingScopes, requireEnv } from './google_auth.js';
+import { buildLeadSheetRequest, LEAD_SHEET_COLUMNS } from './lead_sheet.js';
+
+test('lead sheet header row matches the schema column order', () => {
+  assert.deepEqual(LEAD_SHEET_COLUMNS, [
+    'booked_at',
+    'slot_start',
+    'slot_end',
+    'name',
+    'email',
+    'phone',
+    'company_or_website',
+    'message',
+    'event_id',
+    'meet_link',
+  ]);
+  const request = buildLeadSheetRequest();
+  assert.equal(request.properties.title, 'Website Leads');
+  assert.equal(request.sheets.length, 1);
+  assert.equal(request.sheets[0].properties.title, 'Leads');
+  const header = request.sheets[0].data[0].rowData[0].values.map((cell) => cell.userEnteredValue.stringValue);
+  assert.deepEqual(header, LEAD_SHEET_COLUMNS);
+});
 
 test('health reports ok with the given time', () => {
   assert.deepEqual(health(new Date('2026-10-02T12:00:00Z')), {

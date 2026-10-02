@@ -2,6 +2,15 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Probe results with real credentials
+
+- **`zack@ascension-marketing.ca` is a Google account without Gmail.** Mail for `ascension-marketing.ca` is hosted at Proton Mail (MX `mail.protonmail.ch`, SPF `include:_spf.protonmail.ch`). The Gmail API answers every send with `400 FAILED_PRECONDITION, Precondition check failed`. The Blueprint's "emails via Gmail" cannot be delivered from this account. This is a constraint on the Blueprint, not a bug.
+- It is also not a Google Workspace account, which is why the Internal audience needed the separate `zack-org` organization.
+- The owner's primary Google Calendar is named `zack@ascension-marketing.ca`, its time zone is **UTC**, and it showed 0 busy blocks for the next 24 hours. Free/busy must be queried with the id `primary`; the email address as id returns `notFound`.
+- An empty calendar set to UTC suggests it may not be the calendar the owner uses day to day. If appointments are kept elsewhere (for example Proton Calendar), the system cannot see them and will offer those times as free. To confirm with the user.
+- Lead sheet: id `13gsPmKXpL60KbVXx8-iFEFgSPSdwIvVDvw2A9PMsjeM`, in `zack@ascension-marketing.ca`'s Drive, tab `Leads`, header row verified equal to the schema's column order.
+- OAuth client id (not a secret): `593931525403-4c23vb675ijk6gsneelv29nmug4edqe2.apps.googleusercontent.com`. The client secret and refresh token are only in `.env`.
+
 ## 2026-10-02: Google Cloud setup
 
 - The browser pane is signed in to two Google accounts. `admin.ascension.marketing@gmail.com` is account 0 and `zack@ascension-marketing.ca` is account 1 (`?authuser=1` in Google Cloud URLs).

@@ -15,7 +15,7 @@ Steps 1 to 3 are done, in the Google account `zack@ascension-marketing.ca`:
 - Consent screen created: app name `My Website Booking`, audience External.
 - **Step 4 is NOT done.** Google keeps the Publish button disabled: "To publish your app, you must complete your configuration on the Branding page." The app is in **Testing**, with `zack@ascension-marketing.ca` added as a test user. Sign-in works in Testing, but **the sign-in expires after 7 days**. See "Before going live" below.
 
-Still to do, by the owner: steps 5 to 8.
+Steps 5 to 8 were done later the same day: the OAuth client exists, `.env` is filled in, the sign-in succeeded with all four scopes, and the lead sheet was created by `npm run setup:sheet` instead of by hand (step 6). Probe results: Calendar and Sheets green, **Gmail red**. See `architecture/link-probes.md`, Lessons.
 
 Two other projects exist in the same account from earlier attempts, "My First Project" and "calander hosting" (both in the organization `zack-org`). They are not used by this system.
 
@@ -81,7 +81,7 @@ Open `.env` in the project folder. The lines are already there; `GOOGLE_CALENDAR
 ```
 GOOGLE_CLIENT_ID=<from step 5>
 GOOGLE_CLIENT_SECRET=<from step 5>
-GOOGLE_CALENDAR_ID=zack@ascension-marketing.ca
+GOOGLE_CALENDAR_ID=primary
 OWNER_EMAIL=zack@ascension-marketing.ca
 LEAD_SHEET_ID=<from step 6>
 ```
@@ -113,7 +113,8 @@ Each prints one line starting with `GREEN` or `RED`. The Gmail probe sends you o
 
 - **"Access blocked: this app's request is invalid"** at sign-in: the client is not a Desktop app client. Recreate it in step 5.
 - **A permission checkbox was left unticked** at sign-in: the probe for that service prints `RED` and names the missing scope. Run step 8 again and tick all four.
-- **Signed in with the wrong Google account:** the calendar probe prints `RED` with "notFound", because `GOOGLE_CALENDAR_ID` names the owner's calendar by its email address and another account cannot see it. Run step 8 again with the right account.
+- **Signed in with the wrong Google account:** the calendar probe prints `RED` with `signed in to the calendar "...", expected zack@ascension-marketing.ca`. Run step 8 again with the right account.
+- **`.env` lines must be `NAME=value`.** Pasting a value over the name (leaving `value=`) makes the tool report the name as missing.
 
 ## Lessons
 

@@ -13,7 +13,17 @@ Architectural choices and the reason behind each. Newest first.
 - **Why:** Each is the narrowest scope that does the job for Calendar and Gmail. `gmail.send` cannot read mail. For Sheets, the narrower `drive.file` would only work on a sheet the system created itself; `spreadsheets` lets the owner point it at any sheet they make, at the cost of covering all their sheets.
 - **Consequence:** changing the list means the owner signs in again.
 
-## 2026-10-02: Calendar named by email, not `primary`
+## 2026-10-02: Lead sheet is created by a tool, not by hand
+
+- **Choice:** `npm run setup:sheet` creates "Website Leads" through the Sheets API as the signed-in owner and writes its id to `.env`.
+- **Why:** It guarantees the sheet is in the right account and that the header row matches the schema exactly. It refuses to run when `LEAD_SHEET_ID` is already set.
+
+## 2026-10-02: Calendar id is `primary` (reverses the entry below)
+
+- **Choice:** `GOOGLE_CALENDAR_ID=primary`. The probe checks that the primary calendar's name equals `OWNER_EMAIL`.
+- **Why:** Free/busy by the owner's email address returns `notFound` for this account, while `primary` works. The name check keeps the protection against signing in with the wrong account.
+
+## 2026-10-02: Calendar named by email, not `primary` (REVERSED the same day)
 
 - **Choice:** `GOOGLE_CALENDAR_ID` is the owner's email address.
 - **Why:** If the sign-in is done with the wrong Google account, the probe fails instead of silently using the wrong calendar.

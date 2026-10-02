@@ -8,6 +8,7 @@
   "scripts": {
     "test": "node --test",
     "google:auth": "node --env-file=.env execution/google_oauth_setup.js",
+    "setup:sheet": "node --env-file=.env execution/setup_lead_sheet.js",
     "probe:calendar": "node --env-file=.env execution/probe_google_calendar.js",
     "probe:gmail": "node --env-file=.env execution/probe_gmail.js",
     "probe:sheets": "node --env-file=.env execution/probe_google_sheets.js",

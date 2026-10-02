@@ -154,13 +154,13 @@ Status of every link. A link is green only after its probe has passed with real 
 | Vercel deploy on push | GREEN | Push to `main` deployed to production, state Ready |
 | Vercel function (`api/` calling `execution/`) | GREEN | `/api/health` returns `ok: true`; `npm run probe:vercel` |
 | Google Cloud project, APIs, consent screen | DONE, with a caveat | Project `my-website-booking-510420` under `zack@ascension-marketing.ca`. App is in Testing, so a sign-in lasts 7 days. Must be fixed before going live (`architecture/google-setup.md`) |
-| Google sign-in (OAuth) | RED: not set up | Waiting for the owner: create the OAuth client, fill `.env`, run `npm run google:auth` |
-| Google Calendar | RED: not set up | `npm run probe:calendar` |
-| Gmail | RED: not set up | `npm run probe:gmail` |
-| Google Sheets | RED: not set up | `npm run probe:sheets` |
+| Google sign-in (OAuth) | GREEN, expires in 7 days | `npm run google:auth` on 2026-10-02 as `zack@ascension-marketing.ca`, all four scopes granted. Expires around 2026-10-09 while the app is in Testing |
+| Google Calendar | GREEN | `npm run probe:calendar`: free/busy readable on the owner's primary calendar. The calendar's own time zone is UTC |
+| Google Sheets | GREEN | `npm run probe:sheets`: sheet "Website Leads", tab "Leads", header row matches the schema |
+| Gmail | **RED: cannot work for this account** | `npm run probe:gmail`: `400 Precondition check failed`. `zack@ascension-marketing.ca` has no Gmail mailbox; the domain's mail is on Proton Mail. Needs a decision from the user on how emails are sent |
 | Google credentials in Vercel | RED: not set up | Set after the local probes are green |
 
-Business logic does not start until every row is green.
+Business logic does not start until every row is green. **Phase L is halted on the Gmail link.**
 
 ## Architect (Phase A)
 

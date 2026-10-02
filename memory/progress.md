@@ -71,6 +71,20 @@ What was done, errors hit, tests run, results. Newest first.
   - Left the "Create OAuth client ID" form open with Desktop app selected, for the owner to click Create. Claude does not view or copy the client secret.
   - Found: two earlier projects in the account ("My First Project", "calander hosting"), created by the user. Left untouched.
   - Mistake: on the New Project form, text meant for the project name was typed while the layout had shifted and landed nowhere; the form was reloaded and redone. Nothing was created by the stray input.
+- The owner created the OAuth client and edited `.env`. The sign-in still printed `RED ... Missing in .env: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET`.
+  - Cause: the values had been pasted over the variable names, leaving lines of the form `value=`. The client id had also been pasted on the sheet-id line.
+  - Patch: a script restored `GOOGLE_CLIENT_ID=` and `GOOGLE_CLIENT_SECRET=` in front of the values by their shape and emptied `LEAD_SHEET_ID`. No value was displayed or changed.
+- Sign-in: `GREEN google sign-in: GOOGLE_REFRESH_TOKEN written to .env`. The owner approved in the browser pane. Token info confirms all four scopes.
+- Built `execution/setup_lead_sheet.js` (SOP updated first) because the user asked not to skip the sheet. `GREEN lead sheet setup: created "Website Leads"`. Read back: header row equals the schema's ten columns, 0 data rows. A second run refuses: `RED ... LEAD_SHEET_ID is already set`. Tests: `npm test`, 9 passing.
+- First probe run:
+  - `RED google calendar: notFound`. Cause: the email address is not a valid calendar id for this account; `primary` is. Patch: `GOOGLE_CALENDAR_ID=primary`, and the probe now checks the primary calendar's name against `OWNER_EMAIL`. Lesson written to `architecture/link-probes.md`.
+  - `GREEN google sheets: sheet "Website Leads" readable, tabs: Leads`
+  - `RED gmail: 400 Precondition check failed.`
+- Second probe run, after the patch:
+  - `GREEN google calendar: zack@ascension-marketing.ca free/busy readable, 0 busy block(s) in the next 24 hours, calendar time zone UTC`
+  - `GREEN google sheets: sheet "Website Leads" readable, tabs: Leads`
+  - `RED gmail: 400 Precondition check failed.` Not fixable in code: the account has no Gmail mailbox (domain mail is on Proton Mail, confirmed by MX records). Lesson written to the SOP.
+- **Phase L halted on the Gmail link.** Waiting for the user's decision on email sending (task_plan.md, Decisions, item 6).
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
