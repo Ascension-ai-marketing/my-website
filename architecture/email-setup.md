@@ -55,6 +55,16 @@ npm --prefix "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite" run p
 
 - 2026-10-02: a Vercel function can open a connection to `smtp.protonmail.ch:587` and receives the `220` greeting (tested on a preview deployment).
 
+## Rotating the token
+
+Do it in this order so email never stops working:
+
+1. Generate a new token in Proton and copy it.
+2. `npm run env:paste -- SMTP_TOKEN`
+3. `npm run probe:email` (sends one test email to the owner)
+4. `npm run vercel:env -- SMTP_TOKEN`, then deploy (any push to `main`) so production picks it up
+5. Delete the old token in Proton.
+
 ## Lessons
 
-None yet.
+- **2026-10-02: the SMTP token was posted in the chat.** Anything pasted into a chat is stored with the conversation, so the token was rotated using the steps above. Secrets go from Proton to the clipboard to `npm run env:paste` only.

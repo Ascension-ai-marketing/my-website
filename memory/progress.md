@@ -106,6 +106,13 @@ What was done, errors hit, tests run, results. Newest first.
   - `vercel env ls`: all ten present for Production and Preview; `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `SMTP_TOKEN` stored as Secret, the rest as Config.
   - Fresh preview (`vercel deploy`, target preview, Ready). `/api/link-check` returned HTTP 200, `ok: true`: calendar GREEN, sheets GREEN, email GREEN (signed in to `smtp.protonmail.ch:587` from inside Vercel).
 - **Phase L complete.** All links green locally and inside Vercel.
+- SMTP token rotated. The owner posted the SMTP username, token, server and port in the chat. Compared by hash: it was the token in use. Treated as exposed.
+  - The owner generated a new token and saved it with `env:paste` (16 characters). Checked by comparison: it differs from the exposed one.
+  - `npm run probe:email`: GREEN with the new token (one more test email to the owner).
+  - The owner ran `npm run vercel:env -- SMTP_TOKEN`: GREEN.
+  - Fresh preview: `/api/link-check` HTTP 200, calendar, sheets and email GREEN with the new token.
+  - This commit redeploys production so it also picks up the new token.
+  - Owner to do: delete the old token in Proton. Not verified by Claude (that would mean signing in with the exposed token).
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
