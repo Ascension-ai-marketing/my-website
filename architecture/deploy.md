@@ -17,9 +17,20 @@ Put the contents of `public/` live on Vercel. Nothing else in the repository is 
 - https://my-website-blue-ten-62.vercel.app (public)
 - https://my-website-ascension-ai1.vercel.app (redirects to Vercel sign-in)
 
-## How it works today: manual deploy from this machine
+## How it works: deploy on push
 
-Pushing to GitHub does **not** deploy yet (see "Not connected yet"). To deploy, run from the project root:
+The Vercel project is connected to the GitHub repository (since 2026-10-02), with `main` as the production branch.
+
+1. A commit is pushed to `main`.
+2. Vercel's Git integration starts a production deployment. No script runs on this machine.
+3. `vercel.json` sets `outputDirectory` to `public`, so Vercel serves that folder only.
+4. A push to any other branch produces a preview deployment instead of production.
+
+**Every push to `main` goes public, including commits that only change the planning files.** Those files are not served, but the site is rebuilt each time.
+
+## Fallback: manual deploy from this machine
+
+If the Git integration is unavailable, deploy from the project root with the CLI. It must be signed in (`vercel whoami` prints `tools-7405`).
 
 ```bash
 vercel deploy --prod
@@ -31,24 +42,12 @@ For a private test build that does not replace production:
 vercel deploy
 ```
 
-`vercel.json` sets `outputDirectory` to `public`, so Vercel serves that folder only. The CLI must be signed in (`vercel whoami` prints `tools-7405`).
-
-## Not connected yet: deploy on push
-
-The intended trigger is a push to `main`. `vercel git connect` fails with "You need to add a Login Connection to your GitHub account first". The Vercel account has no GitHub connection. The user has to add one in Vercel under Account Settings, Authentication, then give Vercel's GitHub app access to the repository. After that, run:
-
-```bash
-vercel git connect --yes
-```
-
-Once it succeeds, update this SOP and the Trigger table in `CLAUDE.md`.
-
 ## Rules
 
 - Only `public/` is published. `CLAUDE.md`, `memory/`, `architecture/` and `execution/` hold private planning and must stay outside `public/`.
 - Do not remove `outputDirectory` from `vercel.json`. Without it, Vercel could serve the repository root and expose the private files.
 - Secrets go in Vercel's environment variables, never in `public/` and never in git.
-- A production deployment is public. Get the user's sign-off before running `vercel deploy --prod`.
+- A production deployment is public. Changes to `public/` need the user's sign-off before they are pushed to `main`. Work that is not signed off goes on another branch.
 
 ## Verify
 

@@ -24,7 +24,7 @@ These are not final until the user approves the Blueprint in `task_plan.md`.
 
 - **Choice:** Deployment is meant to be triggered by pushing to `main` through Vercel's Git integration. There is no deploy script in `execution/`.
 - **Why:** It is the simplest mechanism. It also keeps `execution/` empty while the Blueprint gate is locked.
-- **Status:** not in effect yet. See the entry above.
+- **Status:** in effect since 2026-10-02, after the user added a GitHub connection to the Vercel account. The CLI stays as a fallback.
 
 ## 2026-10-02: Deployment set up before the Blueprint
 

@@ -155,8 +155,8 @@ No payload formatting defined yet.
 
 | Trigger | Fires when | Does | Status |
 | --- | --- | --- | --- |
-| Vercel deploy (manual) | `vercel deploy --prod` is run from the project root | Vercel publishes `public/` to production at https://my-website-blue-ten-62.vercel.app | LIVE since 2026-10-02. Serving the placeholder page. |
-| Vercel deploy on push | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Same, without a manual command | NOT CONNECTED. The Vercel account has no GitHub connection yet (see `architecture/deploy.md`). |
+| Vercel deploy on push | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Vercel publishes `public/` to production at https://my-website-blue-ten-62.vercel.app | CONNECTED since 2026-10-02. Serving the placeholder page. |
+| Vercel deploy (manual fallback) | `vercel deploy --prod` is run from the project root | Same, from this machine | Available. Used for the first deployment. |
 
 Details and the verify commands are in `architecture/deploy.md`. Only `public/` is ever served; the planning files at the root stay private.
 

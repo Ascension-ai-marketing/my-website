@@ -14,7 +14,7 @@ Research, discoveries, and constraints. Newest first.
 ## 2026-10-02: Vercel, after linking
 
 - **There are two Vercel accounts.** The CLI is signed in as `tools-7405` (team "Ascension AI", slug `ascension-ai1`, Hobby). The project `my-website` lives there. The Vercel connector in Claude is signed in to a different account (below) and cannot see or manage this project.
-- **The Vercel account has no GitHub connection**, so the repository cannot be connected for deploy-on-push until the user adds one.
+- **The Vercel account had no GitHub connection** at first, which blocked deploy-on-push with "You need to add a Login Connection to your GitHub account first". The user added the connection later on 2026-10-02 and the repository is now connected.
 - **The connection must be added on the account that owns the project.** The CLI account `tools-7405` is `tools@ascension-marketing.ca`. The built-in browser pane was signed in as `admin.ascension.marketing@gmail.com`, the other account. Connecting GitHub there would not help this project.
 - **GitHub's Authorize button showed as disabled in the browser pane's popup window.** The popup is a sign-in window that Claude cannot inspect or drive. Workaround: do the GitHub authorization in a regular browser.
 - **A new project's first deployment is promoted to production** even when run without `--prod`.

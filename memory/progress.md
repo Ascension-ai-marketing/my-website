@@ -30,6 +30,9 @@ What was done, errors hit, tests run, results. Newest first.
   - `vercel git connect --yes` failed three more times with the same error: no GitHub Login Connection on the Vercel account `tools-7405`.
   - The built-in browser still redirects `vercel.com/account/settings/authentication` to the login page, and no Chrome browser is connected to the session, so the connection cannot be added from here.
   - Waiting on the user to sign in to Vercel in the browser pane, or to add the GitHub connection in their own browser.
+- GitHub connected to Vercel. The user added the GitHub connection on the Vercel account.
+  - `vercel git connect --yes` reported "Ascension-ai-marketing/my-website is already connected to your project".
+  - Verified through the Vercel API: the project's link is GitHub `Ascension-ai-marketing/my-website`, production branch `main`.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

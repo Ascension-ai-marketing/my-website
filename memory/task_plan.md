@@ -39,7 +39,7 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 3. **Spam blocking.** Not selected as a rule. Without it, a bot can fill the calendar with fake calls and send emails from the owner's Gmail to arbitrary addresses. Recommended: add it.
 4. **Site content.** Nothing is known yet about what the site says: business name, offer, proof, pages. This must come from the user.
 5. **Analytics provider.** Analytics was selected but not which one.
-6. **Deploy on push.** The Vercel project exists and is live, but pushing to GitHub does not deploy until the user adds a GitHub connection to the Vercel account (see `architecture/deploy.md`).
+6. ~~Deploy on push.~~ Resolved 2026-10-02: the repository is connected to the Vercel project.
 
 ## Protocol 0: Initialization
 
@@ -86,7 +86,7 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Repository side of the Vercel deploy: `vercel.json`, `public/`, `architecture/deploy.md` (done early, at the user's request, before the Blueprint)
 - [x] Create the Vercel project `my-website` and link this folder to it with the Vercel CLI
 - [x] Verify the production URL with the commands in `architecture/deploy.md` (placeholder page: 200, private files: 404)
-- [ ] Connect the GitHub repository so a push deploys. BLOCKED: the user must add a GitHub connection to the Vercel account (see `architecture/deploy.md`)
+- [x] Connect the GitHub repository so a push to `main` deploys
 - [ ] Move to production
 - [ ] Set up and document any other triggers
 - [ ] Finalize the Maintenance Log in CLAUDE.md
