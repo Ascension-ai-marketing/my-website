@@ -52,6 +52,11 @@ What was done, errors hit, tests run, results. Newest first.
   - Merged to `main` (fast-forward, commit `fb19850`). Production deployment Ready.
   - Production probe: `npm run probe:vercel -- https://my-website-blue-ten-62.vercel.app` printed `GREEN vercel: page 200, /api/health ok, 7 private paths 404`. `/.env.example` also 404.
   - Not done: the Google links. No Google credentials exist yet; the owner has to follow `architecture/google-setup.md`. Phase L is halted there.
+- The user ran `npm run google:auth` from `~/Desktop/claude`.
+  - Error: `npm error enoent Could not read package.json` (wrong folder; the project is in `Projects/My websiite`).
+  - Also found: `.env` had none of the values yet, so the tool would have stopped anyway.
+  - Patch: the SOP commands now use `--prefix` with the project path. `.env` now has the five lines laid out, with the calendar id and owner email filled in (not secrets) and the client id, client secret and sheet id left blank for the owner.
+  - Test: `npm --prefix "<project>" run google:auth` from another folder prints `RED google sign-in: Missing in .env: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET`, as expected until the owner fills them in.
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

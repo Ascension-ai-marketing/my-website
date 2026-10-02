@@ -56,7 +56,7 @@ Skip this step if you chose Internal.
 
 ### 7. Fill in `.env`
 
-Open `.env` in the project folder and set these lines (template in `.env.example`):
+Open `.env` in the project folder. The lines are already there; `GOOGLE_CALENDAR_ID` and `OWNER_EMAIL` are filled in. Paste the three values after the `=` signs:
 
 ```
 GOOGLE_CLIENT_ID=<from step 5>
@@ -70,10 +70,10 @@ Leave `GOOGLE_REFRESH_TOKEN` out. The next step writes it.
 
 ### 8. Sign in once
 
-From the project folder:
+The command must run in the project folder, the one that contains `package.json`. From anywhere else, name the folder with `--prefix`:
 
 ```bash
-npm run google:auth
+npm --prefix "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite" run google:auth
 ```
 
 Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow all four permissions. The tool writes `GOOGLE_REFRESH_TOKEN` into `.env` and says so.
@@ -81,6 +81,7 @@ Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow all
 ### 9. Run the probes
 
 ```bash
+cd "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite"
 npm run probe:calendar
 npm run probe:sheets
 npm run probe:gmail
@@ -96,4 +97,5 @@ Each prints one line starting with `GREEN` or `RED`. The Gmail probe sends you o
 
 ## Lessons
 
-None yet.
+- **2026-10-02: `npm run google:auth` failed with "Could not read package.json".** It was run from `~/Desktop/claude`, the parent folder, which has no `package.json`. The commands in this SOP now use `--prefix` so they work from any folder. The same applies to the probes in step 9.
+- **2026-10-02: the sign-in tool needs steps 1 to 7 done first.** With `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` empty it prints `RED google sign-in: Missing in .env: ...` and stops.
