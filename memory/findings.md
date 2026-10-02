@@ -2,6 +2,15 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Research for the booking system
+
+- **A Google service account cannot do this job.** The Calendar API refuses with "Service accounts cannot invite attendees without Domain-Wide Delegation of Authority". Inviting the visitor as a guest is part of the payload, so the system must act as the calendar owner through OAuth (a stored refresh token), or use a service account with domain-wide delegation set up by a Google Workspace admin. Sources: https://support.google.com/calendar/thread/299552457 and https://stackoverflow.com/questions/78580627
+- **OAuth refresh tokens die after 7 days if the Google Cloud app is left in "Testing".** This applies to apps with an External user type. Fix: set the app to "In production", or use the Internal user type if `ascension-marketing.ca` is a Google Workspace domain. Sources: https://stackoverflow.com/questions/69459141 and https://developers.google.com/google-ads/api/docs/get-started/common-errors
+- **Vercel only runs functions from an `api/` folder at the project root** (Vercel docs, error list: function patterns must target `api/`). The protocol puts scripts in `execution/`. Both can hold: `api/` contains thin handlers that call the deterministic modules in `execution/`.
+- **Not verified yet:** that `api/` functions work alongside `outputDirectory: public` in this project. To be proven with a probe in Phase L.
+- **Not verified yet:** whether `zack@ascension-marketing.ca` is a Google Workspace account. It decides which OAuth setup applies.
+- **To check before launch:** Vercel's Hobby plan is described as for personal, non-commercial use. A business site that books sales calls may need the Pro plan. I have not confirmed this against Vercel's current terms.
+
 ## 2026-10-02: Vercel access
 
 - The Vercel connector in Claude is signed in as `admin.ascension.marketing@gmail.com` (username `adminascensionmarketing-2247`, Hobby plan). The account has no projects yet.

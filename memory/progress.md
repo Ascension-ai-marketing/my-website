@@ -18,4 +18,8 @@ What was done, errors hit, tests run, results. Newest first.
   - Tried next: the Vercel dashboard in the built-in browser. It is not signed in, and signing in is the user's step.
   - Not tried: the Vercel CLI. It is not installed and would also need the user to sign in.
   - Result: nothing is deployed. No Vercel project exists. Waiting on the user to give the connector access to the team or to sign in.
-- Tests: the placeholder page was opened locally in the browser pane. No deployment to test yet.
+- Tests: the placeholder page was opened locally in the browser pane and renders ("Coming soon"). No deployment to test yet.
+- Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
+- Data schema drafted in CLAUDE.md. Not confirmed yet.
+- Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).
+- Blueprint written in task_plan.md with six open decisions. Waiting for the user's approval. `execution/` is still empty.

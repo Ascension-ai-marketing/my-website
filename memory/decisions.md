@@ -2,6 +2,14 @@
 
 Architectural choices and the reason behind each. Newest first.
 
+## 2026-10-02: Proposed, pending Blueprint approval
+
+These are not final until the user approves the Blueprint in `task_plan.md`.
+
+- **Google access by OAuth as the calendar owner, not a service account.** Why: a service account cannot invite guests without domain-wide delegation, and the guest invite is part of the payload.
+- **`api/` holds thin handlers, `execution/` holds the logic.** Why: Vercel only runs functions from `api/`, and the protocol requires deterministic tools in `execution/`.
+- **Google Calendar is the source of truth; the sheet is a log.** Why: the user's answer. The sheet is never read to decide availability.
+
 ## 2026-10-02: Vercel serves `public/` only
 
 - **Choice:** `vercel.json` sets `outputDirectory` to `public`. The site lives in `public/`; everything else in the repository is never published.
