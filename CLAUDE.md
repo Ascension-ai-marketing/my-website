@@ -4,7 +4,8 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 
 ## State
 
-- **Current phase:** L — Link, complete on 2026-10-02. Next: A — Architect. (Blueprint approved by the user on 2026-10-02.)
+- **Current phase:** A — Architect, complete on 2026-10-02 (built, unit-tested, and proven by a live end-to-end test on a preview). Next: S — Stylize. (Blueprint approved 2026-10-02; Phase L complete 2026-10-02.)
+- **Booking on the live site:** OFF. `/api/slots` and `/api/book` answer 404 in production until `BOOKING_LIVE=true` is set in Vercel (a Phase T step that needs the user's sign-off).
 - **Execution gate:** OPEN since 2026-10-02. All three conditions are met:
   - [x] All five Blueprint discovery questions are answered
   - [x] The Data Schema below is defined and the Payload shape is confirmed
@@ -153,7 +154,7 @@ Offered and not selected by the user, so it is not a rule: a ban on invented sit
 - Business logic is deterministic and lives in `execution/` as atomic, testable scripts.
 - Every script in `execution/` has a matching SOP in `architecture/`. If logic changes, the SOP is updated before the code.
 - The navigation layer only routes between SOPs and tools. It does not do complex work itself.
-- Credentials live in `.env` and nowhere else. `.env` is never committed or printed.
+- Credentials live in `.env` locally and in Vercel's environment variables for the deployed functions, and nowhere else. `.env` is never committed, printed or uploaded (`.gitignore` and `.vercelignore` both exclude it).
 - All intermediate files go through `.tmp/`. Nothing in `.tmp/` is a deliverable.
 - The project is complete only when the Payload lands at its final destination.
 - Every output ships with a test, screenshot, or one-line verify command.
@@ -186,11 +187,12 @@ Business logic does not start until every row is green. **Every link is green as
 
 ## Architect (Phase A)
 
-- SOPs: `architecture/deploy.md` (deploy to Vercel), `architecture/link-probes.md` (Phase L probes), `architecture/google-setup.md` (Google credentials), `architecture/email-setup.md` (Proton SMTP token, done by the owner).
-- Navigation: `api/` holds thin Vercel function handlers that only call tools. So far: `api/health.js` and `api/link-check.js` (preview deployments only).
-- Tools: `execution/` holds the probes, the one-time setup tools (Google sign-in, lead sheet, clipboard-to-`.env`, `.env`-to-Vercel), and shared helpers in `execution/lib/`. No business logic yet.
+- SOPs, setup and operations: `architecture/deploy.md` (deploy to Vercel), `architecture/link-probes.md` (Phase L probes), `architecture/google-setup.md` (Google credentials), `architecture/email-setup.md` (Proton SMTP token, done by the owner), `architecture/live-test.md` (live end-to-end test and its cleanup).
+- SOPs, booking logic: `architecture/booking-flow.md` (the order of calls, HTTP answers, live switch, time limits, logging), `architecture/availability.md`, `architecture/booking-validation.md`, `architecture/calendar-event.md`, `architecture/booking-emails.md`, `architecture/lead-row.md`.
+- Navigation: `navigation/` holds the flows (`slots_flow.js`, `book_flow.js`), which call the tools in the SOP's order and compute nothing themselves, and `live.js`, the production on/off switch. `api/` holds thin Vercel handlers that read the request, call a flow and write the response: `api/slots.js` (`GET /api/slots`), `api/book.js` (`POST /api/book`), `api/health.js`, and `api/link-check.js` (preview deployments only).
+- Tools: `execution/` holds the booking tools (`booking_rules.js`, `availability.js`, `validate_request.js`, `rate_limits.js`, `calendar_event.js`, `booking_emails.js`, `lead_row.js`), the probes, the one-time setup tools (Google sign-in, lead sheet, clipboard-to-`.env`, `.env`-to-Vercel), the live-test cleanup tool, and shared helpers in `execution/lib/`.
 - Runtime: Node. Google is called over plain HTTPS with `fetch`. One dependency, `nodemailer`, for SMTP.
-- Commands: `npm test` runs the unit tests. The probe commands are listed in `architecture/link-probes.md`.
+- Commands: `npm test` runs the unit tests (48 as of 2026-10-02). The probe commands are listed in `architecture/link-probes.md`; the live-test commands in `architecture/live-test.md`.
 
 ## Stylize (Phase S)
 
@@ -201,13 +203,15 @@ No payload formatting defined yet.
 | Trigger | Fires when | Does | Status |
 | --- | --- | --- | --- |
 | Vercel deploy on push | A commit is pushed to `main` on GitHub (`Ascension-ai-marketing/my-website`) | Vercel publishes `public/` to production at https://my-website-blue-ten-62.vercel.app | CONNECTED since 2026-10-02. Serving the placeholder page. |
-| Vercel deploy (manual fallback) | `vercel deploy --prod` is run from the project root | Same, from this machine | Available. Used for the first deployment. |
+| Vercel deploy (manual fallback) | `vercel deploy --prod` is run from the project root | Same, from this machine | Available. Used for the first deployment. Needs `.vercelignore` in place (see the Maintenance Log). |
+| Booking switch | The Vercel environment variable `BOOKING_LIVE` is set to `true` for Production, followed by a deploy | `/api/slots` and `/api/book` start answering on the live site | OFF. Not set. Turning it on needs the user's sign-off (Phase T). |
 
 Details and the verify commands are in `architecture/deploy.md`. Only `public/` is ever served; the planning files at the root stay private.
 
 ## Maintenance Log
 
 - 2026-10-02: a test deployment went to production because a new project's first deployment is always promoted. Nothing private was exposed. Lesson recorded in `architecture/deploy.md`.
+- 2026-10-02: `vercel deploy` uploaded `.env` into the source of four CLI deployments (three with real secrets). Not publicly served; readable inside the Vercel account. Fixed with `.vercelignore` and tested. The three deployments still exist until the owner removes them. Lesson recorded in `architecture/deploy.md`.
 
 When something fails, follow the repair loop: analyze the error, patch the script in `execution/`, test the fix, then write the lesson into the matching SOP in `architecture/`.
 
@@ -218,9 +222,11 @@ When something fails, follow the repair loop: analyze the error, patch the scrip
 ├── .env             # Credentials (verified in Phase L)
 ├── .env.example     # The variable names, no values
 ├── package.json     # Commands (npm test, probes). One dependency: nodemailer
-├── vercel.json      # Tells Vercel to serve public/ only
+├── vercel.json      # Tells Vercel to serve public/ only, and sets function time limits
+├── .vercelignore    # Keeps .env and local state out of CLI deploys
 ├── public/          # The site. The only folder that is published
 ├── api/             # Layer N: Vercel function handlers, served under /api/
+├── navigation/      # Layer N: the flows the handlers call (order of tool calls)
 ├── memory/          # task_plan.md, findings.md, progress.md, decisions.md
 ├── architecture/    # Layer A: SOPs
 ├── execution/       # Layer T: scripts

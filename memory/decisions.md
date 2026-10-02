@@ -2,6 +2,38 @@
 
 Architectural choices and the reason behind each. Newest first.
 
+## 2026-10-02: Phase A choices made by the user
+
+- **Rate limits:** one upcoming call per email address, and at most 10 new bookings per hour across the site.
+- **Invitation:** Google Calendar sends the visitor its own invitation in addition to the confirmation email.
+- **Public response:** the browser gets only the status, the slot and the Meet link. The full record stays server-side.
+- **Live test:** approved, with `admin.ascension.marketing@gmail.com` as the visitor.
+
+## 2026-10-02: A `navigation/` folder for the flows
+
+- **Choice:** The order of tool calls lives in `navigation/slots_flow.js` and `navigation/book_flow.js`. `api/` handlers only translate HTTP.
+- **Why:** It maps the protocol's three layers onto three folders (`architecture/`, `navigation/`, `execution/`) and lets the flows be tested without HTTP, with stand-ins for the tools that talk to Google and Proton.
+
+## 2026-10-02: Booking is off on the live site until a switch is set
+
+- **Choice:** In production, `/api/slots` and `/api/book` answer 404 unless `BOOKING_LIVE=true`.
+- **Why:** Every push to `main` is public immediately, and the protocol requires the user's sign-off before deployment. The switch lets the code live on `main` without opening a public endpoint that creates calendar events and sends email.
+
+## 2026-10-02: The post-insert conflict check looks at booking events only
+
+- **Choice:** After creating the event, only events tagged `source=my-website` are checked for an earlier claim on the slot.
+- **Why:** The owner's own events are already judged by Google's free/busy rules before the insert. Re-checking them with a raw list would treat events that free/busy calls free (a declined invitation, for example) as conflicts and cancel a booking the visitor was just told about.
+
+## 2026-10-02: A failed email or lead row does not undo a booking
+
+- **Choice:** Once the calendar event exists, the booking stands. Failures are recorded in the payload and the log.
+- **Why:** The call is real the moment it is on the calendar and the visitor has Google's invitation. Deleting it because a sheet row failed would be worse for the visitor than a missing row.
+
+## 2026-10-02: The speed-up waits for Phase S
+
+- **Choice:** The 7.5-second booking time is not fixed in Phase A.
+- **Why:** The fix changes how emails and the lead row are sent. Doing it after the live test would mean merging code that was not live-tested; the user approved one live test. It is planned with the booking form in Phase S, which needs its own test anyway.
+
 ## 2026-10-02: Email goes through Proton SMTP, not Gmail (changes the Blueprint)
 
 - **Choice:** The two booking emails are sent from `zack@ascension-marketing.ca` through `smtp.protonmail.ch:587` with a Proton SMTP token. The Gmail integration, the Gmail probe and the `gmail.send` scope are removed.

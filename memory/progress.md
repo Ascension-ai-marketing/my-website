@@ -113,6 +113,21 @@ What was done, errors hit, tests run, results. Newest first.
   - Fresh preview: `/api/link-check` HTTP 200, calendar, sheets and email GREEN with the new token.
   - This commit redeploys production so it also picks up the new token.
   - Owner to do: delete the old token in Proton. Not verified by Claude (that would mean signing in with the exposed token).
+- **Phase A started** on branch `phase-a-booking` at the user's request.
+  - The user answered four questions: both rate limits; send Google's invitation too; the browser gets only what it needs; live test approved.
+  - Schema extended in CLAUDE.md, then seven SOPs written and committed (`95a597d`) before any code.
+  - Built the tools, the two flows in `navigation/`, and `api/slots.js` and `api/book.js`.
+  - Design review before testing found three problems:
+    1. The post-insert conflict check looked at all events, not only bookings. It could have cancelled an accepted booking. Patched (SOP first), with a unit test.
+    2. **`vercel deploy` had uploaded `.env`** into the source of four CLI deployments; three hold real secrets (`6iqjqo8k2`, `g65hfhckc`, `ctkao016z`). Verified through the deployment files listing. `/.env` is not publicly served. The earlier finding that the CLI skips `.env` was wrong and is corrected. Patch: `.vercelignore`. Test: a scratch copy with dummy env files, deployed with the CLI, uploaded only `.vercelignore`, `public/index.html` and `vercel.json`. (My first check printed FAIL because it matched the name `.vercelignore` itself; the file list shows it passed.) The three deployments still exist; removing them is the owner's step.
+    3. No explicit time limit. Checked: project default is 300 seconds. Set 180 for `api/book.js` and 30 for `api/slots.js`, lowered the SMTP timeouts to fit, and added `elapsed_ms` to the log.
+  - Tests: `npm test`, 48 passing. They cover the November 1 time change, the 24-hour and 14-day edges, every refusal, the conflict path that deletes the event, and email and lead-row failures.
+  - Local read-only run of the slot list against the real calendar: 160 slots, Oct 5 to Oct 16, about 0.5 seconds.
+  - Preview of commit `fca6d0f` (made by `git push`): slot list 200 with 160 slots; wrong method 405; bad email 400; bot trap 429; Saturday 422; garbage body 400; code files 404.
+  - **Live end-to-end test: passed.** Details in `architecture/live-test.md`. Booked, Meet link created, event and row found, both emails sent and both found in the visitor's Gmail inbox, second booking refused as `already_booked`, booked slot removed from the list. Server time 7.5 seconds.
+  - Cleanup verified: test event and row removed, slot offered again, sheet back to the header only, hourly count 0. The invitation and confirmation emails remain in the test inbox.
+  - Not done in Phase A: the speed-up (deferred to Phase S, see decisions.md), and checking the owner notification in the Proton inbox (Claude cannot read it).
+- **Phase A complete.** Booking stays off on the live site (`BOOKING_LIVE` not set).
 - Phase B discovery complete. All five questions answered by the user, plus the booking rules (call length, hours, notice, window, time zone, calendar owner, form fields). Answers recorded in CLAUDE.md.
 - Data schema drafted in CLAUDE.md. Not confirmed yet.
 - Research done and logged in findings.md (service-account limit, 7-day OAuth token expiry, Vercel `api/` requirement).

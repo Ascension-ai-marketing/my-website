@@ -1,6 +1,6 @@
 # Task Plan
 
-**Blueprint status:** APPROVED by the user on 2026-10-02 ("yes to all, blueprint approved"). Phase L (Link) complete on 2026-10-02. Next: Phase A (Architect).
+**Blueprint status:** APPROVED by the user on 2026-10-02 ("yes to all, blueprint approved"). Phase L (Link) complete on 2026-10-02. Phase A (Architect) complete on 2026-10-02. Next: Phase S (Stylize).
 
 **Deadline:** the Google sign-in expires around 2026-10-09 while the OAuth app is in Testing. Re-run `npm run google:auth` and `npm run vercel:env -- GOOGLE_REFRESH_TOKEN` if it lapses during development; fix it for good before Phase T.
 
@@ -90,14 +90,21 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 
 ## Phase A: Architect
 
-- [ ] Write SOPs in `architecture/`
-- [ ] Build deterministic tools in `execution/`
-- [ ] Wire the navigation layer (`api/` handlers)
+- [x] Schema extended with the user's Phase A answers (rate limits, invitation, public response, bot trap)
+- [x] Write SOPs in `architecture/` (booking flow, availability, validation, calendar event, emails, lead row, live test)
+- [x] Build deterministic tools in `execution/`
+- [x] Wire the navigation layer (`navigation/` flows, `api/slots.js`, `api/book.js`)
+- [x] Unit tests: 48 passing
+- [x] Live end-to-end test on a preview, with cleanup (results in `architecture/live-test.md`)
+- [x] Booking switched off in production until `BOOKING_LIVE=true`
 
 ## Phase S: Stylize
 
-- [ ] Format the payload for delivery: both emails, the calendar event text, the sheet
-- [ ] Build and style the site
+- [ ] Format the payload for delivery: both emails (wording, tone, HTML), the calendar event text, the sheet
+- [ ] Build and style the site, including the booking form (it must send the hidden `homepage` field empty and show progress while booking)
+- [ ] Speed up booking: send the two emails and the lead row at the same time (a real booking took 7.5 seconds)
+- [ ] Decide what the visitor is told about Google's "unknown sender" invitation
+- [ ] Needs from the user: site content (business name, offer, proof, pages) and the analytics provider
 - [ ] Attach a verify step to every output
 - [ ] User sign-off
 
@@ -108,6 +115,9 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 - [x] Verify the production URL with the commands in `architecture/deploy.md` (placeholder page: 200, private files: 404)
 - [x] Connect the GitHub repository so a push to `main` deploys
 - [ ] **Take the Google app out of Testing** (publish it, or make it Internal) and sign in again. Otherwise bookings stop 7 days after each sign-in
+- [ ] **Owner:** remove the three CLI deployments that contain `.env` (`architecture/deploy.md`, Lessons)
+- [ ] Turn booking on: set `BOOKING_LIVE=true` in Vercel for Production, after the user's sign-off
+- [ ] Block holidays: the system only knows a day is off if the calendar has a busy event on it
 - [ ] Move to production
 - [ ] Set up and document any other triggers
 - [ ] Finalize the Maintenance Log in CLAUDE.md

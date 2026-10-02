@@ -2,6 +2,16 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Phase A, live test
+
+- **Google Meet links can be created through the API on this account** (a Google account without Workspace or Gmail). The link came back in the insert response.
+- **A booking takes about 7.5 seconds on the server.** A refusal takes 1 to 160 ms. The slot list takes about half a second.
+- **Deliverability:** the confirmation sent from `zack@ascension-marketing.ca` through Proton landed in a Gmail inbox, not spam.
+- **Google's invitation reaches a first-time Gmail visitor as "Invitation from an unknown sender"**, and the event is not added to their calendar until they respond.
+- **Holidays are not known to the system.** Monday 2026-10-12 (Thanksgiving) is offered because the calendar has nothing on it.
+- Vercel functions: Fluid compute, 300-second default limit, region `iad1`. `api/book.js` is capped at 180 seconds, `api/slots.js` at 30.
+- `vercel curl <path> --deployment <url> -- -X POST -H ... -d ...` passes curl options through, so protected previews can be tested with POST requests.
+
 ## 2026-10-02: Email through Proton
 
 - Proton's SMTP submission: host `smtp.protonmail.ch`, port 587, STARTTLS, username is the address, password is an SMTP token generated under Settings, All settings, IMAP/SMTP, SMTP tokens. Available on paid Proton Mail plans with a custom domain address. The token is shown once. Messages sent this way appear in the Sent folder. Source: https://proton.me/support/smtp-submission

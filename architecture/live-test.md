@@ -31,6 +31,25 @@ Approved by the user on 2026-10-02 ("Yes, run it").
 - `find`: lists upcoming booking events (`source=my-website`) whose guest is the email, and lead rows whose email column is the email. Prints ids, times, Meet links and row numbers; prints no other visitor data.
 - `cleanup`: deletes exactly those events (`sendUpdates=none`) and those rows (bottom-up, with a `deleteDimension` request on the `Leads` tab). Refuses to touch an event or row whose name is not `Live Test (delete me)`, so it can never remove a real booking.
 
+## Results, 2026-10-02
+
+Run on the git-made preview of commit `fca6d0f`, visitor `admin.ascension.marketing@gmail.com` (chosen by the user).
+
+| Step | Result |
+| --- | --- |
+| Slot list | 200, 160 slots, Oct 5 to Oct 16 |
+| Booking | 200 `booked`, slot `2026-10-05T09:00:00-04:00`, Meet link returned |
+| Calendar | Event found with the guest and the Meet link |
+| Lead sheet | Row 2, with the test name and email in the schema's `name` and `email` columns |
+| Emails | Log: both `sent: true` with message ids. The visitor's Gmail inbox held the confirmation from `zack@ascension-marketing.ca` and Google's invitation, both in the inbox, not spam |
+| Second booking, same email | 409 `already_booked` |
+| Booked slot | No longer offered (159 slots) |
+| Server time | `elapsed_ms: 7506` for the booking |
+| Cleanup | Event and row removed; `test:find` finds nothing; slot offered again (160); sheet back to the header only; hourly count 0 |
+
+Not checked: the owner notification's arrival in the Proton inbox (Claude cannot read it; Proton accepted the message).
+
 ## Lessons
 
-None yet.
+- **2026-10-02: `vercel logs <deployment> --json` returns the log lines newest first.** Filter by content (`"outcome":"booked"`), not by position.
+- **2026-10-02: the Vercel files listing does not work for git-made deployments.** To confirm such a preview holds no secrets, check `git ls-files` instead: only committed files are deployed.
