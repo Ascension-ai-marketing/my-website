@@ -23,7 +23,7 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
 
 ## Data Schema
 
-**Status: CONFIRMED by the user on 2026-10-02**, including the two proposals (slot alignment and optional fields). Change this section before changing any code that depends on it.
+**Status: CONFIRMED by the user on 2026-10-02**, including the two proposals (slot alignment and optional fields). Extended at the start of Phase A (same day) with the user's answers on rate limits, the calendar invitation and the public response; those additions are marked "Phase A". Change this section before changing any code that depends on it.
 
 ### Booking rules (configuration)
 
@@ -35,9 +35,16 @@ This project is built with the B.L.A.S.T. protocol (Blueprint, Link, Architect, 
   "bookable_hours": { "start": "09:00", "end": "17:00" },
   "slot_minutes": 30,
   "min_notice_hours": 24,
-  "max_days_ahead": 14
+  "max_days_ahead": 14,
+  "max_upcoming_calls_per_email": 1,
+  "max_new_bookings_per_hour": 10,
+  "send_calendar_invitation": true
 }
 ```
+
+Phase A: the last three values were chosen by the user on 2026-10-02. "Upcoming" means a call on the calendar that has not started yet. The hourly count is taken from the lead sheet's `booked_at` column over the previous 60 minutes. `send_calendar_invitation` means Google Calendar emails the visitor its own invitation as well as the system's confirmation email.
+
+"Up to 14 days ahead" means the slot starts less than 14 × 24 hours after the moment of booking. "24 hours of notice" means the slot starts at least 24 × 60 minutes after that moment.
 
 Slots start on the hour and half hour, so the last slot of a day is 16:30 to 17:00.
 
@@ -68,13 +75,16 @@ Input shape:
   "email": "string, required, valid email address",
   "phone": "string",
   "company_or_website": "string",
-  "message": "string, what they want to discuss, up to 1000 characters"
+  "message": "string, what they want to discuss, up to 1000 characters",
+  "homepage": "hidden bot trap, must be absent or empty"
 }
 ```
 
+Phase A: `homepage` is the hidden bot trap. The booking form hides it from people; a value in it means a bot filled the form. Limits: `phone` up to 40 characters of digits, spaces and `+ ( ) - .`; `company_or_website` up to 200 characters. `name` and the text fields may not contain line breaks or control characters (except line breaks in `message`).
+
 `slot_start`, `name` and `email` are required. `phone`, `company_or_website` and `message` are optional.
 
-Output (Payload) shape when the booking succeeds:
+Output (Payload) when the booking succeeds. Phase A: this is the server-side record. It is written to the server log (identifiers and statuses only, no visitor details) and is **not** sent to the browser:
 
 ```json
 {
@@ -98,17 +108,29 @@ Output (Payload) shape when the booking succeeds:
 }
 ```
 
-Output when the booking is refused. Nothing is created:
+Public response to the browser when the booking succeeds (Phase A, chosen by the user):
+
+```json
+{
+  "status": "booked",
+  "slot": { "start": "2026-10-06T14:00:00-04:00", "end": "2026-10-06T14:30:00-04:00", "timezone": "America/Toronto" },
+  "meet_link": "string"
+}
+```
+
+If an email or the lead row fails after the event exists, the booking stands: the record shows `sent: false` or `lead_row: null`, the failure is logged with the event id, and the visitor still receives the success response.
+
+Output when the booking is refused. Nothing is created. The same shape goes to the browser:
 
 ```json
 {
   "status": "refused",
-  "reason": "outside_bookable_hours | insufficient_notice | beyond_booking_window | slot_unavailable | invalid_input | spam",
+  "reason": "outside_bookable_hours | insufficient_notice | beyond_booking_window | slot_unavailable | already_booked | invalid_input | spam",
   "message": "string, shown to the visitor"
 }
 ```
 
-`slot_unavailable` is returned when the calendar shows the slot as taken at the moment of booking. `spam` is returned when the request fails the bot trap or the rate limit.
+`slot_unavailable` is returned when the calendar shows the slot as taken at the moment of booking. `already_booked` (Phase A) is returned when the email address already has an upcoming call. `spam` is returned when the request fails the bot trap or the hourly limit.
 
 ### Lead sheet row
 
@@ -121,8 +143,8 @@ Confirmed by the user on 2026-10-02.
 - **Tone:** bold and energetic, and warm and friendly. Applies to the site copy and to both emails.
 - **Bookable hours only:** refuse any slot outside the bookable days and hours, with less than 24 hours of notice, or more than 14 days ahead. A refused booking creates nothing.
 
-- **Never double-book:** re-check the calendar immediately before creating the event. If the slot is no longer free, refuse with `slot_unavailable` and create nothing. (Added 2026-10-02.)
-- **Block spam:** refuse a request that fails input validation, the hidden bot trap, or the rate limit. A refused request creates nothing and sends no email. (Added 2026-10-02.)
+- **Never double-book:** re-check the calendar immediately before creating the event. If the slot is no longer free, refuse with `slot_unavailable` and create nothing. (Added 2026-10-02.) Phase A: right after creating the event, check again; if another event overlapping the slot was created earlier, delete the new event and refuse with `slot_unavailable`. This closes the gap when two people book the same slot at the same moment.
+- **Block spam:** refuse a request that fails input validation, the hidden bot trap, or the rate limit. A refused request creates nothing and sends no email. (Added 2026-10-02.) Phase A: the rate limit is one upcoming call per email address (refused as `already_booked`) and at most 10 new bookings per hour across the site (refused as `spam`).
 
 Offered and not selected by the user, so it is not a rule: a ban on invented site content. In practice the site copy still needs real facts from the user, because the system never guesses at business details.
 
