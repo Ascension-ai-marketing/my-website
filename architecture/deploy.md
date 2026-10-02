@@ -69,4 +69,6 @@ Expected: status Ready, then `200`, then `404`.
 
 ## Lessons
 
+- **2026-10-02: Vercel blocks a push deployment when it cannot tell who authored the commit.** The first push after connecting GitHub produced a deployment in state BLOCKED with the code `COMMIT_AUTHOR_REQUIRED`. The commit was authored as `s s <fvr>` (this machine's global git identity), which GitHub cannot match to any account. Fix: this repository now has its own git identity, the GitHub account `Ascension-ai-marketing` with its GitHub no-reply email, set with `git config --local`. Commits to this repository must keep an author email that belongs to that GitHub account, or the deployment is blocked again. Check with `git config user.email` before committing from a new clone.
+
 - **2026-10-02: a project's first deployment is promoted to production even without `--prod`.** `vercel deploy` was run expecting a private preview; Vercel assigned the production domains to it because the project had no production deployment yet. Only the placeholder page went public and the private files returned 404, so nothing leaked. For a new project, assume the first deployment is public.
