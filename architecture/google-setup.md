@@ -104,10 +104,9 @@ Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow eve
 cd "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite"
 npm run probe:calendar
 npm run probe:sheets
-npm run probe:gmail
 ```
 
-Each prints one line starting with `GREEN` or `RED`. The Gmail probe sends you one test email.
+Each prints one line starting with `GREEN` or `RED`. Email has its own probe; see `architecture/email-setup.md`.
 
 ## Edge cases
 
