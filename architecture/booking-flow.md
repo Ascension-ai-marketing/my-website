@@ -30,8 +30,11 @@ Each step either passes or ends the flow with a refusal. Nothing is created befo
 5. `fetchBusy(slot)`: if the slot overlaps anything, `slot_unavailable`.
 6. `createBookingEvent(booking)` (`execution/calendar_event.js`): the commit point. Google sends the visitor its invitation here.
 7. `findEarlierConflict(event)`: if another overlapping event was created first, `deleteEvent(event)` and refuse with `slot_unavailable`.
-8. `sendBookingEmails(booking, event)` (`execution/booking_emails.js`): the visitor confirmation and the owner notification. Each is tried once more on failure. A failure does not undo the booking.
-9. `appendLeadRow(booking, event, bookedAt)` (`execution/lead_row.js`). Tried once more on failure. A failure does not undo the booking.
+8. At the same time (Phase S, 2026-10-02, to cut the wait):
+   - `sendBookingEmails(booking, event)` (`execution/booking_emails.js`): the visitor confirmation and the owner notification, themselves sent at the same time. Each is tried once more on failure.
+   - `appendLeadRow(booking, event, bookedAt)` (`execution/lead_row.js`). Tried once more on failure.
+   A failure in either does not undo the booking.
+9. Wait for both.
 10. Log the record (identifiers and statuses only). Answer `200` with the public response.
 
 ## HTTP answers
@@ -54,8 +57,8 @@ On the production site both endpoints answer `404` unless the Vercel environment
 ## Time limits
 
 - `api/book.js` may run up to 180 seconds and `api/slots.js` up to 30 seconds (`vercel.json`, `functions`). The project default is 300.
-- One booking makes about eight Google calls in sequence, may wait up to 3 seconds for the Meet link, and sends two emails with up to two attempts each.
-- SMTP timeouts are 8 seconds to connect, 8 seconds for the greeting and 12 seconds of silence. Four failing attempts therefore stay under about 112 seconds, inside the 180-second limit.
+- One booking makes about six Google calls in sequence, may wait up to 3 seconds for the Meet link, then sends the two emails and writes the lead row at the same time, with up to two attempts each.
+- SMTP timeouts are 8 seconds to connect, 8 seconds for the greeting and 12 seconds of silence. Because the emails go out in parallel, two failing attempts per email stay under about 56 seconds, well inside the 180-second limit.
 - If the function were cut off after the event exists, the booking would be half delivered and a retry by the visitor would get `already_booked`. The limits above are sized so that does not happen.
 
 ## Logging

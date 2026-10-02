@@ -149,6 +149,16 @@ Confirmed by the user on 2026-10-02.
 
 Offered and not selected by the user, so it is not a rule: a ban on invented site content. In practice the site copy still needs real facts from the user, because the system never guesses at business details.
 
+## Site content (Phase S, from the user, 2026-10-02)
+
+- Business name: **Ascension AI**. Tagline (from the user's logo): "Rise above. Automate beyond."
+- Services: Websites and landing pages; AI automation; SEO and content. Nothing else.
+- Audience: local service businesses.
+- The call: "Free discovery call", 30 minutes on Google Meet.
+- Proof: none yet. No testimonials, results or logos are shown, and none are invented.
+- Address: vercel.app for now. Analytics: Vercel Web Analytics.
+- Look: taken from the user's logo (black, gold, electric blue, chrome). Details in `architecture/site.md`.
+
 ## Architectural Invariants
 
 - Business logic is deterministic and lives in `execution/` as atomic, testable scripts.
@@ -196,7 +206,7 @@ Business logic does not start until every row is green. **Every link is green as
 
 ## Stylize (Phase S)
 
-No payload formatting defined yet.
+In progress on branch `phase-s`. SOP: `architecture/site.md` (page, form, privacy page, analytics, local preview); email and event wording in `architecture/booking-emails.md` and `architecture/calendar-event.md`. Nothing in `public/` reaches `main` before the user signs off.
 
 ## Trigger (Phase T)
 

@@ -15,8 +15,8 @@ Create the booking on the owner's Google Calendar: the visitor invited as a gues
 
 ## Event body
 
-- `summary`: `Call with <name>`. Phase S may change the wording.
-- `description`: the visitor's details (name, email, phone, company or website, message) as plain lines, so the owner sees them in the calendar.
+- `summary`: `Discovery call: <name> | Ascension AI` (Phase S). Both the owner and the visitor see it. `eventSummary(name)` builds it, and the live-test cleanup tool uses the same function.
+- `description`: a first line for the visitor ("Free 30-minute discovery call with Ascension AI. Join with the Google Meet link on this event."), then the visitor's details (name, email, phone, company or website, message) as plain lines, so the owner sees them in the calendar.
 - `start` / `end`: the slot as Toronto times, with `timeZone: America/Toronto` stated explicitly.
 - `attendees`: one guest, the visitor's email, with their name.
 - `conferenceData.createRequest`: type `hangoutsMeet`, with a random `requestId`. Requires `conferenceDataVersion=1` on the request.

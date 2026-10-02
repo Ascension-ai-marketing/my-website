@@ -29,7 +29,7 @@ Approved by the user on 2026-10-02 ("Yes, run it").
 `execution/test_booking_cleanup.js`:
 
 - `find`: lists upcoming booking events (`source=my-website`) whose guest is the email, and lead rows whose email column is the email. Prints ids, times, Meet links and row numbers; prints no other visitor data.
-- `cleanup`: deletes exactly those events (`sendUpdates=none`) and those rows (bottom-up, with a `deleteDimension` request on the `Leads` tab). Refuses to touch an event or row whose name is not `Live Test (delete me)`, so it can never remove a real booking.
+- `cleanup`: deletes exactly those events (`sendUpdates=none`) and those rows (bottom-up, with a `deleteDimension` request on the `Leads` tab). Refuses to touch an event whose title is not `eventSummary('Live Test (delete me)')` or a row whose name is not `Live Test (delete me)`, so it can never remove a real booking. (Before Phase S the title was `Call with Live Test (delete me)`; the tool matches both.)
 
 ## Results, 2026-10-02
 

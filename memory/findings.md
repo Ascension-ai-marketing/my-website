@@ -2,6 +2,11 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Phase S, starting point
+
+- **The current website at `ascension-marketing.ca` does not load over HTTPS.** The domain points at Wix (A record `185.230.63.107`, `www` to `pointing.wixdns.net`), `http://` redirects to `https://`, and the HTTPS connection fails at the TLS handshake (seen from curl and from Firecrawl). It is not a usable source for site content. Not investigated further.
+- No site content exists anywhere in the project. `public/index.html` is still the placeholder.
+
 ## 2026-10-02: Phase A, live test
 
 - **Google Meet links can be created through the API on this account** (a Google account without Workspace or Gmail). The link came back in the insert response.
