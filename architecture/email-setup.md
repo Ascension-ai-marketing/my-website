@@ -30,13 +30,13 @@ The first three are already in `.env`.
 5. With the token still on the clipboard, run this from any folder. It saves the clipboard into `.env` without showing it:
 
 ```bash
-npm --prefix "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite" run env:paste -- SMTP_TOKEN
+npm --prefix "/Users/ascensionmacbook/Ascension/Claude/Website Design/Ascension website" run env:paste -- SMTP_TOKEN
 ```
 
 6. Run the probe. It sends one test email from the owner to the owner:
 
 ```bash
-npm --prefix "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite" run probe:email
+npm --prefix "/Users/ascensionmacbook/Ascension/Claude/Website Design/Ascension website" run probe:email
 ```
 
 ## Rules

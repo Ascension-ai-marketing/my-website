@@ -93,7 +93,7 @@ Leave `GOOGLE_REFRESH_TOKEN` out. The next step writes it.
 The command must run in the project folder, the one that contains `package.json`. From anywhere else, name the folder with `--prefix`:
 
 ```bash
-npm --prefix "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite" run google:auth
+npm --prefix "/Users/ascensionmacbook/Ascension/Claude/Website Design/Ascension website" run google:auth
 ```
 
 Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow every permission it asks for (three since 2026-10-02: Calendar events, Calendar free/busy, Sheets). The tool writes `GOOGLE_REFRESH_TOKEN` into `.env` and says so.
@@ -101,7 +101,7 @@ Open the link it prints, sign in as `zack@ascension-marketing.ca`, and allow eve
 ### 9. Run the probes
 
 ```bash
-cd "/Users/ascensionmacbook/Desktop/claude/Projects/My websiite"
+cd "/Users/ascensionmacbook/Ascension/Claude/Website Design/Ascension website"
 npm run probe:calendar
 npm run probe:sheets
 ```
