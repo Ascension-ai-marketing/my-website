@@ -73,4 +73,6 @@ States only what the system actually does: what the form collects, that it goes 
 
 ## Lessons
 
-None yet.
+- **2026-10-02: a class that sets `display` overrides the `hidden` attribute.** The form, the "opens soon" panel and the confirmation all showed at once, because `.booking-panel { display: grid }` beat `hidden`. Fix: a global `[hidden] { display: none !important; }`. Any new panel that is shown and hidden with `hidden` relies on that rule.
+- **2026-10-02: a screenshot taken right after loading can catch the picker before the slots arrive.** Wait for the slot buttons before judging the layout.
+- **2026-10-02: the project folder was moved.** Absolute paths in the SOPs and in the workspace launch config had to be updated. Prefer paths relative to the project root in new documents.

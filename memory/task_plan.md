@@ -100,12 +100,14 @@ Drafted in `CLAUDE.md` under "Data Schema": the booking rules, the two operation
 
 ## Phase S: Stylize
 
-- [ ] Format the payload for delivery: both emails (wording, tone, HTML), the calendar event text, the sheet
-- [ ] Build and style the site, including the booking form (it must send the hidden `homepage` field empty and show progress while booking)
-- [ ] Speed up booking: send the two emails and the lead row at the same time (a real booking took 7.5 seconds)
-- [ ] Decide what the visitor is told about Google's "unknown sender" invitation
-- [ ] Needs from the user: site content (business name, offer, proof, pages) and the analytics provider
-- [ ] Attach a verify step to every output
+- [x] Format the payload for delivery: both emails (wording, tone, HTML), the calendar event text, the sheet
+- [x] Build and style the site, including the booking form (it must send the hidden `homepage` field empty and show progress while booking)
+- [x] Speed up booking: send the two emails and the lead row at the same time (7.5 seconds before, 3.6 after)
+- [x] Tell the visitor about Google's "unknown sender" invitation (in the confirmation email and on the confirmation screen)
+- [x] Content and analytics choice received from the user
+- [ ] **Owner:** save the logo as `public/logo.png`
+- [ ] **Owner:** enable Web Analytics (`vercel project web-analytics enable`)
+- [x] Attach a verify step to every output (unit tests, local preview states, live test 2)
 - [ ] User sign-off
 
 ## Phase T: Trigger

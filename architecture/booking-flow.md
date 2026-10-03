@@ -73,4 +73,4 @@ One line per request, JSON, through `console.log`, visible in Vercel's runtime l
 
 ## Lessons
 
-- **2026-10-02: a real booking took 7.5 seconds on the server.** Most of it is the two emails, sent one after the other over separate connections to Proton. It works, but it is slow for a visitor watching a button. To fix in Phase S, together with the booking form: send the two emails and the lead row at the same time, and show progress in the form. Left unchanged for now so that the code that was live-tested is the code that is merged.
+- **2026-10-02: a real booking took 7.5 seconds on the server.** Most of it is the two emails, sent one after the other over separate connections to Proton. It works, but it is slow for a visitor watching a button. To fix in Phase S, together with the booking form: send the two emails and the lead row at the same time, and show progress in the form. Left unchanged in Phase A so that the code that was live-tested was the code that was merged. Fixed in Phase S: with the emails and the lead row sent at the same time, the second live test took 3.6 seconds.

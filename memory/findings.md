@@ -2,6 +2,14 @@
 
 Research, discoveries, and constraints. Newest first.
 
+## 2026-10-02: Phase S results
+
+- With parallel sending, a real booking takes about 3.6 seconds on the server (7.5 before).
+- The styled HTML confirmation from Proton still lands in a Gmail inbox, not spam.
+- `vercel project web-analytics enable` cannot be confirmed by an agent; the owner must run it in a terminal. Until then `/_vercel/insights/script.js` returns 404 and the page is unaffected.
+- The project now lives at `~/Ascension/Claude/Website Design/Ascension website`. A user-level `CLAUDE.md` says to default to Bun. This project stays on the Node runtime (Vercel functions run on Node and the tests use `node:test`); `bun run <script>` is used as the script runner.
+- The Vercel preview URL cannot be opened in the browser pane (it is signed in to a different Vercel account), so previews are checked with `vercel curl` and the page itself with the local dry-run server.
+
 ## 2026-10-02: Phase S, starting point
 
 - **The current website at `ascension-marketing.ca` does not load over HTTPS.** The domain points at Wix (A record `185.230.63.107`, `www` to `pointing.wixdns.net`), `http://` redirects to `https://`, and the HTTPS connection fails at the TLS handshake (seen from curl and from Firecrawl). It is not a usable source for site content. Not investigated further.

@@ -49,6 +49,10 @@ Run on the git-made preview of commit `fca6d0f`, visitor `admin.ascension.market
 
 Not checked: the owner notification's arrival in the Proton inbox (Claude cannot read it; Proton accepted the message).
 
+## Results, 2026-10-02, second run (Phase S)
+
+Run on the git-made preview of commit `05a3141`, same visitor. Booking 200 with a Meet link; event titled `Discovery call: Live Test (delete me) | Ascension AI`; row 2 with all fields, the message kept as plain text; both emails sent; the styled confirmation and Google's invitation both in the Gmail inbox; second attempt 409 `already_booked`; `elapsed_ms: 3643`. Cleanup verified (0 events, 0 rows, slot offered again, 160 slots).
+
 ## Lessons
 
 - **2026-10-02: `vercel logs <deployment> --json` returns the log lines newest first.** Filter by content (`"outcome":"booked"`), not by position.
